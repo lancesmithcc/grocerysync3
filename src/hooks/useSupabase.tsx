@@ -11,7 +11,7 @@ interface SupabaseContextValue {
 
 const SupabaseContext = createContext<SupabaseContextValue | null>(null);
 
-export const SupabaseProvider = ({ children }: { children: ReactNode }) => {
+export const SupabaseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
@@ -41,8 +41,6 @@ export const SupabaseProvider = ({ children }: { children: ReactNode }) => {
 
 export const useSupabase = (): SupabaseContextValue => {
   const context = useContext(SupabaseContext);
-  if (!context) {
-    throw new Error('useSupabase must be used within SupabaseProvider');
-  }
+  if (!context) throw new Error('useSupabase must be used within SupabaseProvider');
   return context;
 }; 
