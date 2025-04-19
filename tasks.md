@@ -2,38 +2,38 @@ GrocerySync Tasks
 
 1. Kick‑off
 
-[ ] Make a fresh Git repo named grocerysync.
-[ ] pnpm create vite@latest grocerysync -- --template react-ts.
-[ ] Push the first commit.
+[x] Make a fresh Git repo named grocerysync.
+[x] pnpm create vite@latest grocerysync -- --template react-ts.
+[x] Push the first commit.
 
 2. Tooling
 
-[ ] Add Tailwind CSS, PostCSS, Autoprefixer.pnpm add -D tailwindcss postcss autoprefixernpx tailwindcss init -p
-[ ] Drop Lexend font link tag into index.html.
-[ ] Install helpers:pnpm add @supabase/supabase-js gsap react-icons
+[x] Add Tailwind CSS, PostCSS, Autoprefixer (installed and initialized)
+[x] Drop Lexend font link tag into index.html.
+[x] Install helpers: pnpm add @supabase/supabase-js gsap react-icons
 
 3. Theme
 
-[ ] In tailwind.config.ts, set darkMode: 'class'.
-[ ] Extend palette: purple: '#8b5cf6', background: '#0d0d0d'.
-[ ] Add borderRadius: { aurora: '33px' }.
-[ ] Write global CSS for aurora border pulse.
+[x] In tailwind.config.ts, set darkMode: 'class'.
+[x] Extend palette: purple: '#8b5cf6', background: '#0d0d0d'.
+[x] Add borderRadius: { aurora: '33px' }.
+[x] Write global CSS for aurora border pulse.
 
 4. Supabase
 
-[ ] Open app.supabase.com and make project grocerysync.
-[ ] Copy project URL and anon token into .env asVITE_SUPABASE_URL=...VITE_SUPABASE_ANON_KEY=...
-[ ] Run SQL in the web editor (see /supabase/schema.sql).
+[x] Open app.supabase.com and make project grocerysync.
+[x] Copy project URL and anon token into .env as VITE_SUPABASE_URL=... VITE_SUPABASE_ANON_KEY=...
+[x] Run SQL in the web editor (see /supabase/schema.sql).
 
 5. Auth
 
-[ ] Turn on email magic‑link auth in the dashboard.
-[ ] Test sign‑up flow with one account.
+[x] Turn on email magic‑link auth in the dashboard.
+[x] Test sign‑up flow with one account.
 
 6. Data Tables
 
-[ ] lists (id, name, owner)[ ] list_users (list_id, user_id, role)[ ] items (id, list_id, creator_id, title, stars, notes, done, created_at)
-[ ] Write RLS so members read; writers insert; admins delete.
+[x] lists (id, name, owner)[ ] list_users (list_id, user_id, role)[ ] items (id, list_id, creator_id, title, stars, notes, done, created_at)
+[x] Write RLS so members read; writers insert; admins delete.
 
 7. App Pages
 
@@ -43,14 +43,14 @@ GrocerySync Tasks
 
 8. UI bits
 
-[ ] Header bar with cart icon and GrocerySync name.
-[ ] GSAP loop that floats 🍌🍞🥕🥛🥦 emojis behind content.
-[ ] Animated aurora glow around focused inputs and cards.
+[x] Header bar with cart icon and GrocerySync name.
+[x] GSAP loop that floats 🍌🍞🥕🥛🥦 emojis behind content.
+[x] Animated aurora glow around focused inputs and cards.
 
 9. Logic
 
-[ ] Hook: useSupabase() wraps auth and queries.
-[ ] CRUD helpers in /lib/db.ts.
+[x] Hook: useSupabase() wraps auth and queries.
+[x] CRUD helpers in /lib/db.ts.
 
 10. Deploy
 
