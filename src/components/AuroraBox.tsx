@@ -1,11 +1,18 @@
 import React from 'react';
 
-interface AuroraBoxProps { children: React.ReactNode; className?: string; }
+interface AuroraBoxProps { 
+  children: React.ReactNode; 
+  className?: string;
+  padding?: string;
+}
 
-const AuroraBox: React.FC<AuroraBoxProps> = ({ children, className = '' }) => (
+const AuroraBox: React.FC<AuroraBoxProps> = ({ children, className = '', padding = 'p-6' }) => (
   <div className={`relative ${className}`}>
-    <div className="absolute -inset-1 bg-purple blur-md animate-aurora-pulse rounded-aurora pointer-events-none"></div>
-    <div className="relative bg-background p-4 rounded-aurora">
+    {/* Aurora Borealis style border gradient - updating to match example image */}
+    <div className="absolute -inset-[2px] bg-gradient-to-br from-purple via-[#3CAAFF] to-[#4ade80] rounded-aurora pointer-events-none"></div>
+    
+    {/* Pure black container with slight inset from the gradient border */}
+    <div className={`relative bg-black m-[1px] ${padding} rounded-[31px]`}>
       {children}
     </div>
   </div>
