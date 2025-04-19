@@ -38,12 +38,29 @@ const Home: React.FC = () => {
         return;
       }
       
+      const loadingMessage = `Creating list "${name}"...`;
+      setMessage(loadingMessage);
+      
       const newList = await createList(name, userId);
       setLists(prev => [...prev, newList]);
       console.log('List created successfully:', newList);
+      
+      setMessage('');
+      
+      getLists(userId).then(setLists).catch(console.error);
+      
     } catch (error) {
       console.error('Error creating list:', error);
-      alert('Failed to create list. Please try again.');
+      
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Unknown error occurred';
+      
+      setMessage(`Failed to create list: ${errorMessage}`);
+      
+      if (user?.id) {
+        getLists(user.id).then(setLists).catch(console.error);
+      }
     }
   };
 
