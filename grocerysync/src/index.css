@@ -1,3 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: 'Lexend', sans-serif;
+}
+
+@keyframes aurora-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.7); }
+  70% { box-shadow: 0 0 10px 10px rgba(139,92,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+}
+
+.aurora-border-pulse:focus,
+.aurora-border-pulse:focus-visible {
+  outline: none;
+  animation: aurora-pulse 2s ease-out infinite;
+  border-radius: 33px;
+  border: 2px solid #8b5cf6;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,3 +88,5 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@layer utilities { .animate-aurora-pulse { animation: aurora-pulse 2s ease-out infinite; } }
