@@ -10,12 +10,14 @@ function App() {
   return (
     <>
       <FloatingEmojis />
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/list/:id" element={<ListView />} />
-        <Route path="/invite/:code" element={<Invite />} />
-      </Routes>
+      <div className="relative z-10">
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/list/:id" element={<ListView />} />
+          <Route path="/invite/:code" element={<Invite />} />
+        </Routes>
+      </div>
     </>
   )
 }
