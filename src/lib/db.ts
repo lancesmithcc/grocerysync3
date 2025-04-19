@@ -32,12 +32,29 @@ export type Item = {
 
 // Lists CRUD
 export const createList = async (name: string, owner_uuid: string): Promise<List> => {
+  console.log('Creating list with params:', { name, owner_uuid });
+  
+  if (!owner_uuid) {
+    throw new Error('owner_uuid is required');
+  }
+  
   const { data, error } = await supabase
     .from('lists')
     .insert([{ name, owner_uuid }])
     .select('*')
     .single();
-  if (error) throw error;
+  
+  if (error) {
+    console.error('Supabase error creating list:', error);
+    throw error;
+  }
+  
+  if (!data) {
+    console.error('No data returned from list creation');
+    throw new Error('Failed to create list: No data returned');
+  }
+  
+  console.log('List created successfully:', data);
   return data;
 };
 

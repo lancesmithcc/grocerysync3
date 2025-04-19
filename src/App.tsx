@@ -30,10 +30,10 @@ function App() {
           {/* Aurora Border */}
           <div style={{
             position: 'absolute',
-            top: '-4px',
-            left: '-4px',
-            right: '-4px',
-            bottom: '-4px',
+            top: '-6px',
+            left: '-6px',
+            right: '-6px',
+            bottom: '-6px',
             background: 'linear-gradient(135deg, #8b5cf6, #3CAAFF, #4ade80)',
             borderRadius: '33px',
             zIndex: 0
@@ -43,7 +43,7 @@ function App() {
           <div style={{
             position: 'relative',
             backgroundColor: '#000',
-            margin: '2px',
+            margin: '5px',
             padding: '40px',
             borderRadius: '31px',
             zIndex: 1

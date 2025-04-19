@@ -27,8 +27,24 @@ const Home: React.FC = () => {
     if (!user) return;
     const name = prompt('New list name');
     if (!name) return;
-    const newList = await createList(name, user.id);
-    setLists(prev => [...prev, newList]);
+    
+    try {
+      console.log('Creating list with user ID:', user.id);
+      const userId = user.id;
+      
+      if (!userId) {
+        console.error('User ID is undefined or null');
+        alert('Error: User ID is missing. Please sign out and sign in again.');
+        return;
+      }
+      
+      const newList = await createList(name, userId);
+      setLists(prev => [...prev, newList]);
+      console.log('List created successfully:', newList);
+    } catch (error) {
+      console.error('Error creating list:', error);
+      alert('Failed to create list. Please try again.');
+    }
   };
 
   if (!user) {
@@ -61,6 +77,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      <Header showEmail={true} />
       <div className="flex justify-between items-center mb-8 border-b border-[#3CAAFF]/30 pb-4">
         <h2 className="text-2xl font-bold text-white">Your <span className="text-[#3CAAFF]">Lists</span></h2>
         <div className="space-x-4">
