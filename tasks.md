@@ -65,3 +65,9 @@ GrocerySync Tasks
 12. Docs
 
 [ ] Update README with set‑up and usage.
+
+# Tasks
+
+- [x] Implement background emoji decoration
+- [x] Implement header layout with Grocery cart icon and styled text
+- [x] Create interface container with black rounded corners and aurora style borders
