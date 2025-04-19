@@ -9,7 +9,7 @@ GrocerySync Tasks
 2. Tooling
 
 [x] Add Tailwind CSS, PostCSS, Autoprefixer (installed and initialized)
-[x] Drop Lexend font link tag into index.html.
+[x] Drop jost font link tag into index.html.
 [x] Install helpers: pnpm add @supabase/supabase-js gsap react-icons
 
 3. Theme

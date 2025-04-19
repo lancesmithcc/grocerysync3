@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 html {
-  font-family: 'Lexend', sans-serif;
+  font-family: 'Jost', sans-serif;
 }
 
 @keyframes aurora-pulse {
   0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.7); }
-  70% { box-shadow: 0 0 10px 10px rgba(139,92,246,0); }
+  70% { box-shadow: 0 0 10px 10px rgba(169, 63, 141, 0); }
   100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
 }
 
