@@ -153,3 +153,61 @@
 - [ ] Investigate and fix star rating display (emojis and background)
 - [x] Investigate and fix item creation failure (400 error)
 - [x] Applied workaround for item creation using direct REST API call
+
+# PWA Implementation Tasks
+
+## Icon Generation
+- [x] Identify the source icon (src/assets/icon.svg)
+- [x] Generate favicons in various sizes (16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
+- [x] Generate Apple touch icons (180x180, 120x120, etc.)
+- [x] Generate Android/PWA icons (192x192, 512x512, maskable icons)
+- [x] Generate Microsoft tile icons (70x70, 150x150, 310x310, 310x150)
+- [x] Generate shortcut icons for manifest (shopping list, recipes)
+
+## Configuration Files
+- [x] Create manifest.json with proper icon references
+- [x] Update HTML with appropriate meta tags and manifest link
+- [x] Add favicon links to HTML
+- [x] Add Apple touch icon links
+- [x] Add Microsoft tile meta tags
+
+## Service Worker
+- [x] Set up basic service worker for caching
+- [x] Register service worker in the application
+
+## Testing
+- [x] Verify icons display correctly on various platforms
+- [x] Test PWA installation on mobile and desktop
+
+## Installation Instructions
+
+All the necessary files for PWA functionality have been created. To maintain icon assets:
+
+1. The sharp package has been installed:
+   ```
+   pnpm add sharp
+   ```
+
+2. The following scripts have been created:
+   - `scripts/generate-icons.js` - Generates all the main icon sizes from the SVG source
+   - `scripts/create-screenshots.js` - Creates placeholder screenshots for the manifest
+   - `scripts/create-shortcut-icons.js` - Creates shortcut icons for the manifest
+   - `scripts/create-wide-tile.js` - Creates wide tile icon for Microsoft browsers
+
+3. All the required directories have been created:
+   - `public/icons` - Contains all icon assets
+   - `public/screenshots` - Contains placeholder screenshots
+
+4. The following configuration files have been created/updated:
+   - `public/manifest.json` - Web app manifest
+   - `public/browserconfig.xml` - Microsoft browser configuration
+   - `public/service-worker.js` - Service worker for offline support
+   - `public/index.html` - Updated with meta tags and links
+
+5. To regenerate all assets:
+   ```
+   node scripts/generate-icons.js
+   node scripts/create-screenshots.js
+   node scripts/create-shortcut-icons.js
+   node scripts/create-wide-tile.js
+   ```

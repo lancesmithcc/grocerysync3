@@ -1,0 +1,68 @@
+{
+  "name": "GrocerySync",
+  "short_name": "GrocerySync",
+  "description": "A modern grocery list and recipe sync application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#333333",
+  "theme_color": "#413e96",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "350x750",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shopping List",
+      "url": "/shopping",
+      "description": "View your shopping list",
+      "icons": [
+        {
+          "src": "/icons/shopping-list-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "url": "/recipes",
+      "description": "View your recipes",
+      "icons": [
+        {
+          "src": "/icons/recipes-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+} 
