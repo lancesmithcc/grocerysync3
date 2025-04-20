@@ -1,11 +1,17 @@
 @tailwind base;
+@layer base {
+  /* Ensure all input fields have more padding and white background with black text */
+  input {
+    @apply bg-white text-black p-6 rounded-aurora focus:bg-gray-100 transition-colors;
+  }
+}
 @tailwind components;
 @tailwind utilities;
 
 /* Ensure proper body styling */
 html, body {
   font-family: 'Jost', sans-serif;
-  background: radial-gradient(circle, #111111, #333333);
+  background: radial-gradient(circle, #000000, #333333);
   color: white;
   min-height: 100vh;
   margin: 0;
@@ -99,12 +105,12 @@ button {
   font-size: 1em;
   font-weight: 700;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background: linear-gradient(135deg, #4e338c, #236597, #2d8d50, #4a3186);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  background: linear-gradient(135deg, #362362, #113048, #1d5833, #20153a);
 }
 button:focus,
 button:focus-visible {

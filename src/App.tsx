@@ -46,6 +46,7 @@ function App() {
             margin: '5px',
             padding: '40px',
             borderRadius: '31px',
+            opacity: 0.9,
             zIndex: 1
           }}>
             <Routes>

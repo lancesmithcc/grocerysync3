@@ -73,7 +73,7 @@
 - [x] Left align grocery list items with stars below much smaller and no backgrounds
 - [x] Tighten line height between title and notes
 - [x] Increase input field padding
-- [x] Show GrocerySync logo and display logged-in user email on ListView page
+- [x] Ensure all input fields have white background with black text
 
 ## Testing & Performance
 - [ ] Write unit tests for key components

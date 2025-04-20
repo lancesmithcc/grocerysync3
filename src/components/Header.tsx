@@ -7,9 +7,9 @@ const Header: React.FC<{ showEmail?: boolean }> = ({ showEmail = false }) => {
 
   return (
     <div className='flex flex-col items-center justify-center w-full'>
-      <BsCart size={42} className='text-white mb-5' />
-      <h1 className='text-5xl mb-4 text-center'>
-        <span className='font-bold'>Grocery</span><span className='font-light'>Sync</span>
+      
+      <h1 className='text-3xl mb-3 text-center'>
+      <BsCart size={42} className='text-white mb-5' /> <span className='font-bold'>Grocery</span><span className='font-light'>Sync</span>
       </h1>
       {showEmail && user?.email && (
         <div className='bg-black/30 py-1.5 px-4 rounded-full border border-[#3CAAFF]/30 mb-10 text-sm font-light'>
