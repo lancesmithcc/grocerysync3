@@ -53,7 +53,8 @@ const FloatingEmojis: React.FC = () => {
       {emojis.map((emoji, idx) => (
         <div
           key={idx}
-          className="floating-emoji text-sm absolute opacity-5 blur-[0.5px]"
+          // Temporarily make emojis more visible for debugging
+          className="floating-emoji text-2xl absolute opacity-50 blur-none"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`

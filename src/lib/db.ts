@@ -34,6 +34,7 @@ export type InviteCode = {
   id: string;
   list_id: string;
   code: string;
+  role: 'member' | 'writer' | 'admin';
   created_at: string;
   expires_at: string;
 };
@@ -45,20 +46,39 @@ export async function createList(name: string, userId: string) {
       throw new Error('Name and userId are required to create a list');
     }
 
+    console.log('Starting list creation with:', { name, userId });
+
+    // First insert into lists
     const { data, error } = await supabase
       .from('lists')
       .insert({ name, owner_uuid: userId })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error inserting into lists:', error);
+      throw error;
+    }
     
-    // Now add the user to list_users
-    const { error: listUserError } = await supabase
-      .from('list_users')
-      .insert({ list_id: data.id, user_id: userId });
+    console.log('Successfully created list:', data);
 
-    if (listUserError) throw listUserError;
+    // Now add the user to list_users
+    try {
+      const { error: listUserError } = await supabase
+        .from('list_users')
+        .insert({ list_id: data.id, user_id: userId, role: 'admin' });
+
+      if (listUserError) {
+        console.error('Error inserting into list_users:', listUserError);
+        throw listUserError;
+      }
+      
+      console.log('Successfully added user to list_users');
+    } catch (listUserErr) {
+      console.error('Exception in list_users insert:', listUserErr);
+      // Even if this fails, return the list data
+      return data;
+    }
 
     return data;
   } catch (error) {
@@ -151,7 +171,11 @@ export const getListUsers = async (list_id: string): Promise<ListUser[]> => {
 };
 
 // Invites CRUD
-export const generateInviteCode = async (list_id: string, expiresIn: number = 7): Promise<InviteCode> => {
+export const generateInviteCode = async (
+  list_id: string, 
+  role: 'member' | 'writer' = 'member',
+  expiresIn: number = 7
+): Promise<InviteCode> => {
   try {
     if (!list_id) {
       throw new Error('List ID is required to generate an invite code');
@@ -166,7 +190,7 @@ export const generateInviteCode = async (list_id: string, expiresIn: number = 7)
 
     const { data, error } = await supabase
       .from('invite_codes')
-      .insert([{ list_id, code, expires_at: expiresAt.toISOString() }])
+      .insert([{ list_id, code, role, expires_at: expiresAt.toISOString() }])
       .select('*')
       .single();
     
@@ -187,11 +211,11 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
     // First, find the invite code and check if it's valid
     const { data: inviteData, error: inviteError } = await supabase
       .from('invite_codes')
-      .select('*')
+      .select('*, role')
       .eq('code', code)
       .single();
     
-    if (inviteError) throw new Error('Invalid invite code');
+    if (inviteError || !inviteData) throw new Error('Invalid invite code');
     
     // Check if the invite is expired
     const now = new Date();
@@ -200,25 +224,65 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
       throw new Error('Invite code has expired');
     }
     
-    // Add the user to the list_users table
+    // Add the user to the list_users table using the role from the invite
     const { data: listUserData, error: listUserError } = await supabase
       .from('list_users')
-      .insert([{ list_id: inviteData.list_id, user_id, role: 'member' }])
+      .insert([{ list_id: inviteData.list_id, user_id, role: inviteData.role }])
       .select('*')
       .single();
     
     if (listUserError) {
       // Check if it's a duplicate (user already in the list)
       if (listUserError.code === '23505') { // Postgres unique constraint violation
-        throw new Error('You are already a member of this list');
+        // Optionally, fetch the existing membership instead of throwing an error
+         const { data: existingMembership, error: fetchError } = await supabase
+          .from('list_users')
+          .select('*')
+          .eq('list_id', inviteData.list_id)
+          .eq('user_id', user_id)
+          .single();
+        if (existingMembership && !fetchError) return existingMembership;
+        throw new Error('You are already a member of this list.');
       }
       throw listUserError;
     }
     
+    // Optionally: Delete the invite code after successful use
+    // await supabase.from('invite_codes').delete().eq('id', inviteData.id);
+
     return listUserData;
   } catch (error) {
     console.error('Error in acceptInvite:', error);
     throw error instanceof Error ? error : new Error('Failed to accept invite');
+  }
+};
+
+// Function to get user's role for a specific list
+export const getListUserRole = async (list_id: string, user_id: string): Promise<ListUser['role'] | null> => {
+  try {
+    if (!list_id || !user_id) {
+      // Return null or throw error if IDs are missing
+      return null; 
+    }
+    const { data, error } = await supabase
+      .from('list_users')
+      .select('role')
+      .eq('list_id', list_id)
+      .eq('user_id', user_id)
+      .single();
+
+    if (error) {
+      // If user not found in list_users for this list, they don't have a role
+      if (error.code === 'PGRST116') { // PostgREST error for "No rows found"
+         return null;
+      }
+      throw error;
+    }
+    return data?.role ?? null;
+  } catch (error) {
+    console.error('Error fetching list user role:', error);
+    // Return null on error to handle cases where role cannot be determined
+    return null; 
   }
 };
 
