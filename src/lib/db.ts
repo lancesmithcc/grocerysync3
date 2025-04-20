@@ -328,6 +328,22 @@ export const createItem = async (
       throw new Error('List ID, Creator ID, and Title are required to create an item');
     }
 
+    // Log the creator_id being used for insertion
+    console.log(`Attempting to insert item with creator_id: ${creator_id}`);
+
+    // Check current auth user right before insert
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('Auth Error or no user found right before insert:', authError);
+      throw new Error('User session not found before inserting item');
+    }
+    console.log(`Verified auth user ID before insert: ${user.id}`);
+    if (user.id !== creator_id) {
+        console.warn(`Mismatch! Auth user ID (${user.id}) !== creator_id (${creator_id})`);
+        // Decide if we should throw an error here or proceed cautiously
+        // For now, let's log and proceed to see if RLS catches it
+    }
+
     const { data, error } = await supabase
       .from('items')
       // Use the validated star value
