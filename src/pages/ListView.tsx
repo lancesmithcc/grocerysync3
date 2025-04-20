@@ -23,8 +23,8 @@ const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> 
           key={starValue}
           type="button"
           onClick={() => onChange(starValue === value ? 0 : starValue)}
-          // Smaller text size, no background/hover color change
-          className={`text-xl transition-transform hover:scale-110`}
+          // Ensuring transparent background
+          className={`text-xl transition-transform hover:scale-110 bg-transparent`}
           title={`${starValue} star${starValue > 1 ? 's' : ''}`}
         >
           {/* Use emoji characters */} 
@@ -237,11 +237,11 @@ const ListView: React.FC = () => {
         {items.map((item, index) => (
           <AuroraBox 
             key={item.id} 
-            className={`flex justify-between items-center my-8 pb-4 border-b border-gray-700/50`}
+            className={`flex justify-between items-start my-3 pb-2`}
           >
             <div>
-              <p className={`font-bold text-lg ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
-              {item.notes && <p className="text-sm text-gray-300 leading-tight mt-1">{item.notes}</p>}
+              <p className={`text-[18px] font-medium ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
+              {item.notes && <p className="text-[14px] text-gray-300 mt-0.5">{item.notes}</p>}
             </div>
             <div className="flex items-center space-x-3">
               <div className="flex" title={`${item.stars} star importance`}>
@@ -250,7 +250,7 @@ const ListView: React.FC = () => {
                       key={starValue} 
                       onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)} 
                       disabled={userRole !== 'admin' && userRole !== 'writer'}
-                      className={`text-lg transition-transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className={`text-lg transition-transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent`}
                     >
                      {starValue <= item.stars ? '⭐' : '☆'}
                    </button>
@@ -272,6 +272,7 @@ const ListView: React.FC = () => {
                 </button>
               )}
             </div>
+            <hr className="border-t border-gray-700/50 w-full my-3.5 absolute bottom-0 left-0" />
           </AuroraBox>
         ))}
       </div>
