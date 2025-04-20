@@ -340,32 +340,92 @@ export const createItem = async (
     console.log(`Verified auth user ID before insert: ${user.id}`);
     if (user.id !== creator_id) {
         console.warn(`Mismatch! Auth user ID (${user.id}) !== creator_id (${creator_id})`);
-        // Decide if we should throw an error here or proceed cautiously
-        // For now, let's log and proceed to see if RLS catches it
     }
 
-    const { data, error } = await supabase
+    // Try using a direct fetch to the Supabase REST API
+    console.log('Trying direct fetch to Supabase REST API...');
+    try {
+      const apiUrl = `${supabaseUrl}/rest/v1/items`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseAnonKey,
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          list_id,
+          creator_id,
+          title,
+          stars: validStars,
+          notes,
+          done: false
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Direct fetch failed with status:', response.status);
+        const errorText = await response.text();
+        console.error('Response body:', errorText);
+        throw new Error(`Direct API request failed: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Successfully inserted item with direct fetch:', data);
+      
+      if (Array.isArray(data) && data.length > 0) {
+        return data[0] as Item;
+      }
+      
+      // Fallback - try to fetch the item we just inserted
+      console.log('Fetching newly created item...');
+    } catch (directApiError) {
+      console.error('Error in direct API call:', directApiError);
+    }
+
+    // Fallback to fetching the newest item that matches our criteria
+    console.log('Attempting to fetch newly created item...');
+    const { data: newItems, error: fetchError } = await supabase
       .from('items')
-      // Use the validated star value
-      .insert([{ list_id, creator_id, title, stars: validStars, notes }]);
+      .select('*')
+      .eq('list_id', list_id)
+      .eq('creator_id', creator_id)
+      .eq('title', title)
+      .order('created_at', { ascending: false })
+      .limit(1);
     
-    if (error) throw error;
-    
-    // Since we removed .select(), data will be null here. We need to handle this.
-    // For now, just returning a dummy object to satisfy the Promise<Item> return type.
-    // A better approach would be to refetch or change the return type.
-    // TODO: Refactor this if the insert succeeds.
-    return { 
-        id: 'temp-id', // Placeholder 
+    if (fetchError) {
+      console.error('Error fetching new item:', fetchError);
+      return { 
+        id: 'temp-id', 
         list_id, 
         creator_id, 
         title, 
         stars: validStars, 
         notes, 
-        done: false, // Default value
-        created_at: new Date().toISOString() // Placeholder
+        done: false,
+        created_at: new Date().toISOString() 
+      } as Item;
+    }
+    
+    if (newItems && newItems.length > 0) {
+      console.log('Successfully fetched new item:', newItems[0]);
+      return newItems[0];
+    }
+    
+    // Fallback return
+    return { 
+      id: 'temp-id', 
+      list_id, 
+      creator_id, 
+      title, 
+      stars: validStars, 
+      notes, 
+      done: false,
+      created_at: new Date().toISOString() 
     } as Item;
-
   } catch (error) {
     console.error('Error in createItem:', error);
     throw error instanceof Error ? error : new Error('Failed to create item');

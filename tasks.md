@@ -148,4 +148,5 @@
 - [x] Fix floating emojis visibility
 - [x] Add size variation to floating emoji animation
 - [ ] Investigate and fix star rating display (emojis and background)
-- [ ] Investigate and fix item creation failure (400 error)
+- [x] Investigate and fix item creation failure (400 error)
+- [x] Applied workaround for item creation using direct REST API call

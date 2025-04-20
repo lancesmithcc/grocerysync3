@@ -157,8 +157,8 @@ const ListView: React.FC = () => {
               onChange={e => setInviteRole(e.target.value as 'writer' | 'admin')}
               className="text-xs bg-gray-700 text-white p-1 rounded-aurora"
             >
-              <option value="writer">Invite Alpha</option>
-              <option value="admin">Invite Sigma</option>
+              <option value="writer">Invite an Alpha</option>
+              <option value="admin">Invite a Sigma</option>
             </select>
             <button 
               onClick={handleGenerateInvite}
@@ -199,25 +199,25 @@ const ListView: React.FC = () => {
       <h2 className="text-2xl">Items</h2>
       {canAddItem ? (
         <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-3 px-1">
             <input
               type="text"
               placeholder="Item title"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 rounded-aurora w-full"
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-4 rounded-aurora w-full"
               required
             />
-            <textarea
+            <input
+              type="text"
               placeholder="Notes (optional)"
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 rounded-aurora w-full"
-              rows={3}
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-4 rounded-aurora w-full"
             />
           </div>
           <div className="flex items-center justify-between py-2">
-             <label className="text-sm text-gray-400 mr-2">Importance:</label>
+             
              <StarInput value={stars} onChange={setStars} />
           </div>
           <button 
