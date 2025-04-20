@@ -70,6 +70,10 @@
 - [ ] Implement dark/light mode
 - [ ] Create animations for list interactions
 - [ ] Implement drag and drop functionality
+- [x] Left align grocery list items with stars below much smaller and no backgrounds
+- [x] Tighten line height between title and notes
+- [x] Increase input field padding
+- [x] Show GrocerySync logo and display logged-in user email on ListView page
 
 ## Testing & Performance
 - [ ] Write unit tests for key components
@@ -159,16 +163,18 @@
 ## Icon Generation
 - [x] Identify the source icon (src/assets/icon.svg)
 - [x] Generate favicons in various sizes (16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
-- [x] Generate Apple touch icons (180x180, 120x120, etc.)
+- [x] Generate Apple touch icons (180x180, 120x120, 152x152, 167x167, 76x76, 60x60, etc.)
 - [x] Generate Android/PWA icons (192x192, 512x512, maskable icons)
 - [x] Generate Microsoft tile icons (70x70, 150x150, 310x310, 310x150)
 - [x] Generate shortcut icons for manifest (shopping list, recipes)
+- [x] Generate iOS splash screens for various device sizes
 
 ## Configuration Files
 - [x] Create manifest.json with proper icon references
 - [x] Update HTML with appropriate meta tags and manifest link
 - [x] Add favicon links to HTML
-- [x] Add Apple touch icon links
+- [x] Add Apple touch icon links with comprehensive size coverage
+- [x] Add iOS splash screen links for different device sizes
 - [x] Add Microsoft tile meta tags
 
 ## Service Worker
@@ -177,7 +183,7 @@
 
 ## Testing
 - [x] Verify icons display correctly on various platforms
-- [x] Test PWA installation on mobile and desktop
+- [x] Enhanced iOS support for proper home screen icon display
 
 ## Installation Instructions
 
@@ -193,6 +199,9 @@ All the necessary files for PWA functionality have been created. To maintain ico
    - `scripts/create-screenshots.js` - Creates placeholder screenshots for the manifest
    - `scripts/create-shortcut-icons.js` - Creates shortcut icons for the manifest
    - `scripts/create-wide-tile.js` - Creates wide tile icon for Microsoft browsers
+   - `scripts/create-ios-icons.js` - Creates high-quality iOS-specific icons
+   - `scripts/create-ios-splash.js` - Creates iOS splash screens for different devices
+   - `scripts/generate-all-assets.js` - Runs all the above scripts in sequence
 
 3. All the required directories have been created:
    - `public/icons` - Contains all icon assets
@@ -202,12 +211,15 @@ All the necessary files for PWA functionality have been created. To maintain ico
    - `public/manifest.json` - Web app manifest
    - `public/browserconfig.xml` - Microsoft browser configuration
    - `public/service-worker.js` - Service worker for offline support
-   - `public/index.html` - Updated with meta tags and links
+   - `public/index.html` - Updated with comprehensive meta tags and links for iOS support
 
-5. To regenerate all assets:
+5. To regenerate all assets with a single command:
    ```
-   node scripts/generate-icons.js
-   node scripts/create-screenshots.js
-   node scripts/create-shortcut-icons.js
-   node scripts/create-wide-tile.js
+   node scripts/generate-all-assets.js
    ```
+
+6. For iOS-specific testing:
+   - Add to home screen from Safari browser
+   - Test on multiple iOS devices if possible
+   - Verify the icon appears correctly on the home screen
+   - Verify the splash screen appears on app launch

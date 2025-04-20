@@ -12,6 +12,7 @@ import {
   getListUserRole
 } from '../lib/db';
 import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline } from 'react-icons/io5';
+import logo from '../assets/icon.svg';
 
 // Helper component for clickable stars input using EMOJIS
 const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> = ({ value, onChange }) => {
@@ -148,6 +149,15 @@ const ListView: React.FC = () => {
 
   return (
     <div className="p-4 space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <img src={logo} alt="GrocerySync Logo" className="h-8 w-8" />
+          <span className="text-xl font-bold">GrocerySync</span>
+        </div>
+        <div className="text-sm text-gray-200">
+          {user?.email}
+        </div>
+      </div>
       <div className="flex justify-between items-center">
         <Link to="/" className="text-sm text-blue-300">&larr; Back to Lists</Link>
         {userRole === 'admin' && (
@@ -205,7 +215,7 @@ const ListView: React.FC = () => {
               placeholder="Item title"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-4 rounded-aurora w-full"
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
               required
             />
             <input
@@ -213,7 +223,7 @@ const ListView: React.FC = () => {
               placeholder="Notes (optional)"
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-4 rounded-aurora w-full"
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
             />
           </div>
           <div className="flex items-center justify-between py-2">
@@ -235,38 +245,37 @@ const ListView: React.FC = () => {
       )}
       <div className="space-y-2">
         {items.map((item, index) => (
-          <AuroraBox 
-            key={item.id} 
-            className={`flex justify-between items-start my-3 pb-2`}
+          <AuroraBox
+            key={item.id}
+            className="flex flex-col items-start my-3 pb-4 space-y-1 relative"
           >
             <div>
               <p className={`text-[18px] font-bold ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
-              {item.notes && <p className="text-[14px] text-gray-300 leading-[0.9em] mt-0.5">{item.notes}</p>}
+              {item.notes && <p className="text-[14px] text-gray-300 leading-none mt-0.5">{item.notes}</p>}
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="flex" title={`${item.stars} star importance`}>
+            <div className="flex justify-between items-center w-full">
+              <div className="flex space-x-1 text-sm" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
-                   <button 
-                      key={starValue} 
-                      onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)} 
-                      disabled={userRole !== 'admin' && userRole !== 'writer'}
-                      className="text-lg transition-transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-0 shadow-none p-0"
-                    >
-                     {starValue <= item.stars ? '⭐' : '☆'}
-                   </button>
+                  <button
+                    key={starValue}
+                    onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)}
+                    disabled={userRole !== 'admin' && userRole !== 'writer'}
+                    className="bg-transparent border-0 shadow-none p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {starValue <= item.stars ? '⭐' : '☆'}
+                  </button>
                 ))}
               </div>
               {userRole === 'admin' && (
-                <button 
-                  onClick={() => handleDelete(item.id)} 
-                  className="text-red-500 hover:text-red-400 hover:bg-red-900/30 transition-colors text-xl p-1 rounded-aurora leading-none"
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="text-red-500 hover:text-red-400 text-lg p-1 rounded-aurora leading-none"
                   title="Delete Item"
                 >
                   <IoTrashOutline />
                 </button>
               )}
             </div>
-            <hr className="border-t border-gray-700/50 w-full my-3.5 absolute bottom-0 left-0" />
           </AuroraBox>
         ))}
       </div>
