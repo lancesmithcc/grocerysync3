@@ -22,8 +22,8 @@ const ListView: React.FC = () => {
   const [inviteCode, setInviteCode] = useState('');
   const [showInvite, setShowInvite] = useState(false);
   const [message, setMessage] = useState('');
-  const [userRole, setUserRole] = useState<ListUser['role'] | null>(null);
-  const [inviteRole, setInviteRole] = useState<'member' | 'writer'>('member');
+  const [userRole, setUserRole] = useState<'writer' | 'admin' | null>(null);
+  const [inviteRole, setInviteRole] = useState<'writer' | 'admin'>('writer');
 
   useEffect(() => {
     setItems([]);
@@ -117,11 +117,11 @@ const ListView: React.FC = () => {
           <div className="flex items-center space-x-2">
             <select 
               value={inviteRole} 
-              onChange={e => setInviteRole(e.target.value as 'member' | 'writer')}
+              onChange={e => setInviteRole(e.target.value as 'writer' | 'admin')}
               className="text-xs bg-gray-700 text-white p-1 rounded"
             >
-              <option value="member">Invite as Member (View)</option>
-              <option value="writer">Invite as Writer (Add)</option>
+              <option value="writer">Invite as Alpha (Add)</option>
+              <option value="admin">Invite as Sigma (Admin)</option>
             </select>
             <button 
               onClick={handleGenerateInvite}
@@ -153,7 +153,7 @@ const ListView: React.FC = () => {
               Copy
             </button>
           </div>
-          <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole}</span></p>
+          <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole === 'admin' ? 'Sigma (Admin)' : 'Alpha (Writer)'}</span></p>
         </div>
       )}
       
@@ -165,15 +165,15 @@ const ListView: React.FC = () => {
             placeholder="Item title"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            className="aurora-border-pulse p-3 rounded-aurora w-full bg-black/60"
+            className="aurora-border-pulse p-3 h-12 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
             required
           />
           <textarea
             placeholder="Notes (optional)"
             value={notes}
             onChange={e => setNotes(e.target.value)}
-            className="aurora-border-pulse p-3 rounded-aurora w-full bg-black/60"
-            rows={2}
+            className="aurora-border-pulse p-3 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
+            rows={3}
           />
           <input
             type="number"
@@ -182,7 +182,7 @@ const ListView: React.FC = () => {
             onChange={e => setStars(Number(e.target.value))}
             min={0}
             max={3}
-            className="aurora-border-pulse p-3 rounded-aurora w-full bg-black/60"
+            className="aurora-border-pulse p-3 h-12 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
           />
           <button 
             type="submit"
@@ -193,7 +193,7 @@ const ListView: React.FC = () => {
         </form>
       ) : (
          <p className="text-sm text-gray-400 italic p-4 text-center bg-black/30 rounded-aurora">
-          {userRole === 'member' ? 'You have view-only access to this list.' : 'Login to add items.'}
+          {userRole === null ? 'Login to add items.' : 'You do not have permission to add items to this list.'}
          </p>
       )}
       <div className="space-y-2">

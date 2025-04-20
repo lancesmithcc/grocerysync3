@@ -15,7 +15,7 @@ export type List = {
 export type ListUser = {
   list_id: string;
   user_id: string;
-  role: 'member' | 'writer' | 'admin';
+  role: 'writer' | 'admin';
   added_at: string;
 };
 
@@ -34,7 +34,7 @@ export type InviteCode = {
   id: string;
   list_id: string;
   code: string;
-  role: 'member' | 'writer' | 'admin';
+  role: 'writer' | 'admin';
   created_at: string;
   expires_at: string;
 };
@@ -155,7 +155,7 @@ export const deleteList = async (list_id: string): Promise<boolean> => {
 export const inviteUserToList = async (
   list_id: string,
   user_id: string,
-  role: 'member' | 'writer' | 'admin' = 'member'
+  role: 'writer' | 'admin' = 'writer'
 ): Promise<ListUser> => {
   try {
     if (!list_id || !user_id) {
@@ -198,7 +198,7 @@ export const getListUsers = async (list_id: string): Promise<ListUser[]> => {
 // Invites CRUD
 export const generateInviteCode = async (
   list_id: string, 
-  role: 'member' | 'writer' = 'member',
+  role: 'writer' | 'admin' = 'writer',
   expiresIn: number = 7
 ): Promise<InviteCode> => {
   try {
@@ -242,6 +242,11 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
     
     if (inviteError || !inviteData) throw new Error('Invalid invite code');
     
+    // Ensure the fetched role is valid according to our new types
+    if (inviteData.role !== 'writer' && inviteData.role !== 'admin') {
+        throw new Error('Invalid role specified in invite code.');
+    }
+    
     // Check if the invite is expired
     const now = new Date();
     const expiresAt = new Date(inviteData.expires_at);
@@ -257,9 +262,7 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
       .single();
     
     if (listUserError) {
-      // Check if it's a duplicate (user already in the list)
-      if (listUserError.code === '23505') { // Postgres unique constraint violation
-        // Optionally, fetch the existing membership instead of throwing an error
+      if (listUserError.code === '23505') { 
          const { data: existingMembership, error: fetchError } = await supabase
           .from('list_users')
           .select('*')
@@ -272,9 +275,6 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
       throw listUserError;
     }
     
-    // Optionally: Delete the invite code after successful use
-    // await supabase.from('invite_codes').delete().eq('id', inviteData.id);
-
     return listUserData;
   } catch (error) {
     console.error('Error in acceptInvite:', error);
@@ -286,7 +286,6 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
 export const getListUserRole = async (list_id: string, user_id: string): Promise<ListUser['role'] | null> => {
   try {
     if (!list_id || !user_id) {
-      // Return null or throw error if IDs are missing
       return null; 
     }
     const { data, error } = await supabase
@@ -297,16 +296,18 @@ export const getListUserRole = async (list_id: string, user_id: string): Promise
       .single();
 
     if (error) {
-      // If user not found in list_users for this list, they don't have a role
-      if (error.code === 'PGRST116') { // PostgREST error for "No rows found"
+      if (error.code === 'PGRST116') { 
          return null;
       }
       throw error;
     }
-    return data?.role ?? null;
+    // Validate the fetched role before returning
+    if (data?.role === 'writer' || data?.role === 'admin') {
+       return data.role;
+    }
+    return null; // Return null if role is not writer or admin
   } catch (error) {
     console.error('Error fetching list user role:', error);
-    // Return null on error to handle cases where role cannot be determined
     return null; 
   }
 };
