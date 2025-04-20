@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuroraBox from '../components/AuroraBox';
 import { useSupabase } from '../hooks/useSupabase';
 import type { List } from '../lib/db';
-import { getLists, createList } from '../lib/db';
+import { getLists, createList, deleteList } from '../lib/db';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 
@@ -11,56 +11,77 @@ const Home: React.FC = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [lists, setLists] = useState<List[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchLists = () => {
+    if (user) {
+      setLoading(true);
+      getLists(user.id)
+        .then(setLists)
+        .catch(err => {
+          console.error('Error fetching lists:', err);
+          setMessage('Could not load your lists.');
+        })
+        .finally(() => setLoading(false));
+    }
+  };
 
   useEffect(() => {
-    if (user) getLists(user.id).then(setLists).catch(console.error);
+    fetchLists();
   }, [user]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('Sending magic link...');
     const { error } = await signInWithMagicLink(email);
+    setLoading(false);
     if (error) setMessage(error.message);
     else setMessage('Check your email for the login link!');
   };
 
   const handleCreateList = async () => {
     if (!user) return;
-    const name = prompt('New list name');
-    if (!name) return;
+    const name = prompt('New list name:');
+    if (!name || name.trim() === '') return;
     
+    setLoading(true);
+    setMessage(`Creating list "${name}"...`);
     try {
-      console.log('Creating list with user ID:', user.id);
       const userId = user.id;
-      
-      if (!userId) {
-        console.error('User ID is undefined or null');
-        alert('Error: User ID is missing. Please sign out and sign in again.');
-        return;
-      }
-      
-      const loadingMessage = `Creating list "${name}"...`;
-      setMessage(loadingMessage);
+      if (!userId) throw new Error('User ID missing');
       
       const newList = await createList(name, userId);
-      setLists(prev => [...prev, newList]);
       console.log('List created successfully:', newList);
-      
       setMessage('');
-      
-      getLists(userId).then(setLists).catch(console.error);
+      fetchLists();
       
     } catch (error) {
       console.error('Error creating list:', error);
-      
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Unknown error occurred';
-      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setMessage(`Failed to create list: ${errorMessage}`);
-      
-      if (user?.id) {
-        getLists(user.id).then(setLists).catch(console.error);
-      }
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteList = async (listId: string, listName: string) => {
+    if (!user) return;
+    if (!confirm(`Are you sure you want to permanently delete the list "${listName}"? This cannot be undone.`)) {
+      return;
+    }
+
+    setLoading(true);
+    setMessage(`Deleting list "${listName}"...`);
+    try {
+      await deleteList(listId);
+      console.log(`List ${listId} deleted successfully.`);
+      setMessage('');
+      fetchLists();
+    } catch (error) {
+      console.error('Error deleting list:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setMessage(`Failed to delete list: ${errorMessage}`);
+      setLoading(false);
     }
   };
 
@@ -78,12 +99,14 @@ const Home: React.FC = () => {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
             <button
               type="submit"
-              className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-4 px-6 rounded-aurora w-full font-bold"
+              className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-4 px-6 rounded-aurora w-full font-bold disabled:opacity-50"
+              disabled={loading}
             >
-              Send Magic Link
+              {loading ? 'Sending...' : 'Send Magic Link'}
             </button>
           </form>
           {message && <p className="mt-6 text-sm text-center text-[#3CAAFF] font-light">{message}</p>}
@@ -97,10 +120,11 @@ const Home: React.FC = () => {
       <Header showEmail={true} />
       <div className="flex justify-between items-center mb-8 border-b border-[#3CAAFF]/30 pb-4">
         <h2 className="text-2xl font-bold text-white">Your <span className="text-[#3CAAFF]">Lists</span></h2>
-        <div className="space-x-4">
+        <div className="flex items-center space-x-4">
           <button
             onClick={handleCreateList}
-            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-2 px-5 rounded-aurora font-bold flex items-center"
+            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-2 px-5 rounded-aurora font-bold flex items-center disabled:opacity-50"
+            disabled={loading}
           >
             <span className="mr-1">+</span> New List
           </button>
@@ -109,23 +133,59 @@ const Home: React.FC = () => {
           </button>
         </div>
       </div>
-      {lists.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 border border-dashed border-[#3CAAFF]/30 rounded-aurora bg-black">
+      
+      {message && (
+         <p className="my-4 text-sm text-center text-[#3CAAFF] font-light bg-black/30 p-2 rounded-aurora">
+          {message}
+         </p>
+      )}
+
+      {loading && !message && (
+         <p className="my-4 text-sm text-center text-gray-400 font-light bg-black/30 p-2 rounded-aurora">
+          Loading lists...
+         </p>
+      )}
+
+      {!loading && lists.length === 0 && !message && (
+        <div className="text-center py-16 text-gray-400 border border-dashed border-[#3CAAFF]/30 rounded-aurora bg-black/50">
           <p className="mb-6 font-light">You don't have any grocery lists yet</p>
           <button
             onClick={handleCreateList}
             className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-3 px-6 rounded-aurora font-bold"
+            disabled={loading}
           >
             Create Your First List
           </button>
         </div>
-      ) : (
+      )}
+      
+      {!loading && lists.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {lists.map(list => (
-            <AuroraBox key={list.id} className="cursor-pointer hover:scale-[1.02] transition-transform">
-              <Link to={`/list/${list.id}`} className="block text-white text-lg font-bold">
+            <AuroraBox 
+              key={list.id} 
+              className="group relative cursor-pointer hover:scale-[1.02] transition-transform p-4 flex justify-between items-center"
+            >
+              <Link 
+                to={`/list/${list.id}`} 
+                className="block text-white text-lg font-bold hover:text-[#3CAAFF] transition-colors flex-grow mr-2"
+              >
                 {list.name}
               </Link>
+              {user && list.owner_uuid === user.id && (
+                <button
+                  onClick={(e) => {
+                     e.stopPropagation();
+                     e.preventDefault();
+                     handleDeleteList(list.id, list.name);
+                  }}
+                  className="text-red-600 hover:text-red-400 text-xs font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-900/30"
+                  title="Delete List"
+                  disabled={loading}
+                >
+                  Delete
+                </button>
+              )}
             </AuroraBox>
           ))}
         </div>

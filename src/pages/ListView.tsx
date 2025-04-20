@@ -26,17 +26,39 @@ const ListView: React.FC = () => {
   const [inviteRole, setInviteRole] = useState<'member' | 'writer'>('member');
 
   useEffect(() => {
-    if (id && user) {
-      getItems(id).then(setItems).catch(console.error);
+    setItems([]);
+    setUserRole(null);
+    console.log('List ID or User changed, fetching data...');
+
+    if (id && user?.id) {
+      console.log(`Fetching items and role for List ID: ${id}, User ID: ${user.id}`);
+      getItems(id).then(setItems).catch(err => {
+        console.error('Error fetching items:', err);
+        setMessage('Could not load items.');
+      });
+
       getListUserRole(id, user.id)
         .then(role => {
-          console.log("User role for this list:", role);
-          setUserRole(role);
+          console.log(`Fetched User Role for List ${id}:`, role);
+          if (role) {
+            setUserRole(role);
+            setMessage('');
+          } else {
+            console.warn(`User ${user.id} not found in list_users for list ${id}. Checking if owner...`);
+            setUserRole(null);
+          }
         })
-        .catch(console.error);
+        .catch(err => {
+          console.error('Error fetching user role:', err);
+          setUserRole(null);
+          setMessage('Could not determine your role for this list.');
+        });
     } else if (id) {
+       console.log(`Fetching items for List ID: ${id} (User not logged in)`);
       getItems(id).then(setItems).catch(console.error);
       setUserRole(null);
+    } else {
+       console.log('No List ID found.');
     }
   }, [id, user]);
 

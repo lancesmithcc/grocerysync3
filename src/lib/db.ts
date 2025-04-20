@@ -126,6 +126,31 @@ export const getList = async (id: string): Promise<List> => {
   }
 };
 
+// Function to delete a list (ensure RLS allows only owner)
+export const deleteList = async (list_id: string): Promise<boolean> => {
+  try {
+    if (!list_id) {
+      throw new Error('List ID is required to delete a list');
+    }
+    // The RLS policy 'lists_delete_owner' should restrict this operation to the owner.
+    // Supabase handles cascade deletes for related tables if set up in DB schema.
+    // If not using DB cascades, you'd need to delete related items/users/invites manually first.
+    const { error } = await supabase
+      .from('lists')
+      .delete()
+      .eq('id', list_id);
+
+    if (error) {
+      console.error('Error deleting list:', error);
+      throw error;
+    }
+    return true;
+  } catch (error) {
+    console.error('Exception in deleteList:', error);
+    throw error instanceof Error ? error : new Error('Failed to delete list');
+  }
+};
+
 // List Users CRUD
 export const inviteUserToList = async (
   list_id: string,
