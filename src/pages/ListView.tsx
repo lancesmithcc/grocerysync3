@@ -11,21 +11,24 @@ import {
   generateInviteCode, 
   getListUserRole
 } from '../lib/db';
-import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline, IoStar, IoStarOutline } from 'react-icons/io5';
+import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline } from 'react-icons/io5';
 
-// Helper component for clickable stars input
+// Helper component for clickable stars input using EMOJIS
 const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> = ({ value, onChange }) => {
   return (
-    <div className="flex space-x-1">
+    // Removed space-x-1 for maximum closeness
+    <div className="flex">
       {[1, 2, 3, 4, 5].map((starValue) => (
         <button
           key={starValue}
-          type="button" // Prevent form submission
-          onClick={() => onChange(starValue === value ? 0 : starValue)} // Click again to set to 0
-          className={`text-2xl transition-colors ${starValue <= value ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+          type="button"
+          onClick={() => onChange(starValue === value ? 0 : starValue)}
+          // Smaller text size, no background/hover color change
+          className={`text-xl transition-transform hover:scale-110`}
           title={`${starValue} star${starValue > 1 ? 's' : ''}`}
         >
-          {starValue <= value ? <IoStar /> : <IoStarOutline />}
+          {/* Use emoji characters */} 
+          {starValue <= value ? '⭐' : '☆'}
         </button>
       ))}
     </div>
@@ -131,14 +134,13 @@ const ListView: React.FC = () => {
   };
 
   const handleUpdateStars = async (item: Item, newStars: number) => {
-     if (!userRole || (userRole !== 'admin' && userRole !== 'writer')) return; // Only writer/admin
+     if (!userRole || (userRole !== 'admin' && userRole !== 'writer')) return;
      const validatedStars = Math.max(0, Math.min(5, newStars));
      try {
        const updated = await updateItem(item.id, { stars: validatedStars });
        setItems(prev => prev.map(i => (i.id === updated.id ? updated : i)));
      } catch (error) {
         console.error("Failed to update stars", error);
-        // Optionally show user feedback
      }
   };
 
@@ -214,8 +216,8 @@ const ListView: React.FC = () => {
               rows={3}
             />
           </div>
-          <div className="flex items-center justify-between">
-             <label className="text-sm text-gray-400">Importance:</label>
+          <div className="flex items-center justify-between py-2">
+             <label className="text-sm text-gray-400 mr-2">Importance:</label>
              <StarInput value={stars} onChange={setStars} />
           </div>
           <button 
@@ -242,15 +244,15 @@ const ListView: React.FC = () => {
               {item.notes && <p className="text-sm text-gray-300 leading-tight mt-1">{item.notes}</p>}
             </div>
             <div className="flex items-center space-x-3">
-              <div className="flex space-x-0.5" title={`${item.stars} star importance`}>
+              <div className="flex" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
                    <button 
                       key={starValue} 
                       onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)} 
-                      disabled={userRole !== 'admin' && userRole !== 'writer'} // Disable if not writer/admin
-                      className={`text-lg transition-colors disabled:opacity-50 ${starValue <= item.stars ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+                      disabled={userRole !== 'admin' && userRole !== 'writer'}
+                      className={`text-lg transition-transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                     {starValue <= item.stars ? <IoStar /> : <IoStarOutline />}
+                     {starValue <= item.stars ? '⭐' : '☆'}
                    </button>
                 ))}
               </div>
