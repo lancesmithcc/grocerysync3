@@ -47,14 +47,14 @@ const FloatingEmojis: React.FC = () => {
       right: 0,
       bottom: 0,
       pointerEvents: 'none',
-      zIndex: -10,
+      zIndex: 0,
       overflow: 'hidden'
     }}>
       {emojis.map((emoji, idx) => (
         <div
           key={idx}
           // Revert to original subtle styling
-          className="floating-emoji text-sm absolute opacity-5 blur-[0.5px]"
+          className="floating-emoji text-sm absolute opacity-20 blur-[0.5px]"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`
