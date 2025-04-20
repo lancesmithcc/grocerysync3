@@ -11,6 +11,26 @@ import {
   generateInviteCode, 
   getListUserRole
 } from '../lib/db';
+import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline, IoStar, IoStarOutline } from 'react-icons/io5';
+
+// Helper component for clickable stars input
+const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> = ({ value, onChange }) => {
+  return (
+    <div className="flex space-x-1">
+      {[1, 2, 3, 4, 5].map((starValue) => (
+        <button
+          key={starValue}
+          type="button" // Prevent form submission
+          onClick={() => onChange(starValue === value ? 0 : starValue)} // Click again to set to 0
+          className={`text-2xl transition-colors ${starValue <= value ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+          title={`${starValue} star${starValue > 1 ? 's' : ''}`}
+        >
+          {starValue <= value ? <IoStar /> : <IoStarOutline />}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const ListView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -65,11 +85,14 @@ const ListView: React.FC = () => {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !id || !(userRole === 'writer' || userRole === 'admin')) return;
+    
+    // Pass the current stars state to createItem
     const newItem = await createItem(id, user.id, title, stars, notes);
     setItems(prev => [newItem, ...prev]);
+    // Reset form fields
     setTitle('');
     setNotes('');
-    setStars(0);
+    setStars(0); 
   };
 
   const handleToggleDone = async (item: Item) => {
@@ -107,6 +130,18 @@ const ListView: React.FC = () => {
     });
   };
 
+  const handleUpdateStars = async (item: Item, newStars: number) => {
+     if (!userRole || (userRole !== 'admin' && userRole !== 'writer')) return; // Only writer/admin
+     const validatedStars = Math.max(0, Math.min(5, newStars));
+     try {
+       const updated = await updateItem(item.id, { stars: validatedStars });
+       setItems(prev => prev.map(i => (i.id === updated.id ? updated : i)));
+     } catch (error) {
+        console.error("Failed to update stars", error);
+        // Optionally show user feedback
+     }
+  };
+
   const canAddItem = userRole === 'writer' || userRole === 'admin';
 
   return (
@@ -118,16 +153,17 @@ const ListView: React.FC = () => {
             <select 
               value={inviteRole} 
               onChange={e => setInviteRole(e.target.value as 'writer' | 'admin')}
-              className="text-xs bg-gray-700 text-white p-1 rounded"
+              className="text-xs bg-gray-700 text-white p-1 rounded-aurora"
             >
-              <option value="writer">Invite as Alpha (Add)</option>
-              <option value="admin">Invite as Sigma (Admin)</option>
+              <option value="writer">Invite Alpha</option>
+              <option value="admin">Invite Sigma</option>
             </select>
             <button 
               onClick={handleGenerateInvite}
-              className="text-sm bg-green-700 hover:bg-green-600 text-white py-1 px-3 rounded-aurora"
+              className="text-sm bg-green-700 hover:bg-green-600 text-white py-1 px-3 rounded-aurora flex items-center"
+              title="Generate Invite Link"
             >
-              Invite Others
+              <IoPersonAddOutline className="mr-1" /> Invite
             </button>
           </div>
         )}
@@ -142,15 +178,16 @@ const ListView: React.FC = () => {
       {showInvite && (
         <div className="bg-green-800/30 p-4 rounded-aurora">
           <h3 className="text-lg mb-2">Invite Link Generated!</h3>
-          <div className="flex items-center justify-between bg-black/50 p-2 rounded mb-2">
+          <div className="flex items-center justify-between bg-black/50 p-2 rounded-aurora mb-2">
             <code className="text-green-300 break-all text-sm">
               {`${window.location.origin}/invite/${inviteCode}`}
             </code>
             <button 
               onClick={handleCopyInvite}
-              className="ml-2 bg-blue-700 text-white text-xs px-2 py-1 rounded"
+              className="ml-2 bg-blue-700 hover:bg-blue-600 text-white text-lg p-1.5 rounded-aurora leading-none"
+              title="Copy Invite Link"
             >
-              Copy
+              <IoCopyOutline />
             </button>
           </div>
           <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole === 'admin' ? 'Sigma (Admin)' : 'Alpha (Writer)'}</span></p>
@@ -159,36 +196,34 @@ const ListView: React.FC = () => {
       
       <h2 className="text-2xl">Items</h2>
       {canAddItem ? (
-        <form onSubmit={handleAdd} className="space-y-3 p-1">
-          <input
-            type="text"
-            placeholder="Item title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            className="aurora-border-pulse p-3 h-12 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
-            required
-          />
-          <textarea
-            placeholder="Notes (optional)"
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            className="aurora-border-pulse p-3 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
-            rows={3}
-          />
-          <input
-            type="number"
-            placeholder="Stars (0-3)"
-            value={stars}
-            onChange={e => setStars(Number(e.target.value))}
-            min={0}
-            max={3}
-            className="aurora-border-pulse p-3 h-12 rounded-aurora w-full bg-gray-800 focus:bg-gray-700 transition-colors"
-          />
+        <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
+          <div className="space-y-2">
+            <input
+              type="text"
+              placeholder="Item title"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 h-14 rounded-aurora w-full"
+              required
+            />
+            <textarea
+              placeholder="Notes (optional)"
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 rounded-aurora w-full"
+              rows={3}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+             <label className="text-sm text-gray-400">Importance:</label>
+             <StarInput value={stars} onChange={setStars} />
+          </div>
           <button 
-            type="submit"
-            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-2 px-5 rounded-aurora w-full sm:w-auto"
+            type="submit" 
+            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-3 px-5 rounded-aurora w-full flex items-center justify-center gap-2"
+            title="Add Item"
           >
-            + Add Item
+            <IoAddCircleOutline className="text-xl"/> Add Item
           </button>
         </form>
       ) : (
@@ -200,23 +235,35 @@ const ListView: React.FC = () => {
         {items.map(item => (
           <AuroraBox key={item.id} className="flex justify-between items-center">
             <div>
-              <p className={`${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
-              {item.notes && <p className="text-sm text-gray-300">{item.notes}</p>}
+              <p className={`font-bold text-lg ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
+              {item.notes && <p className="text-sm text-gray-300 leading-tight mt-1">{item.notes}</p>}
             </div>
             <div className="flex items-center space-x-3">
-              <span>{'⭐'.repeat(item.stars)}</span>
+              <div className="flex" title={`${item.stars} star importance`}>
+                {[1, 2, 3, 4, 5].map((starValue) => (
+                   <button 
+                      key={starValue} 
+                      onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)} 
+                      disabled={userRole !== 'admin' && userRole !== 'writer'} // Disable if not writer/admin
+                      className={`text-xl transition-colors disabled:opacity-50 ${starValue <= item.stars ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+                    >
+                     {starValue <= item.stars ? <IoStar /> : <IoStarOutline />}
+                   </button>
+                ))}
+              </div>
               <input 
                 type="checkbox" 
                 checked={item.done} 
                 onChange={() => handleToggleDone(item)} 
-                className="form-checkbox h-5 w-5 text-purple-500 rounded border-gray-600 bg-gray-800 focus:ring-purple-500"
+                className="form-checkbox h-5 w-5 text-[#6D5AE6] rounded border-gray-600 bg-gray-800 focus:ring-[#6D5AE6]"
               />
               {userRole === 'admin' && (
                 <button 
                   onClick={() => handleDelete(item.id)} 
-                  className="text-red-500 hover:text-red-400 text-xs font-semibold uppercase px-2 py-1 rounded hover:bg-red-900/30 transition-colors"
+                  className="text-red-500 hover:text-red-400 hover:bg-red-900/30 transition-colors text-xl p-1 rounded-aurora leading-none"
+                  title="Delete Item"
                 >
-                  Delete
+                  <IoTrashOutline />
                 </button>
               )}
             </div>

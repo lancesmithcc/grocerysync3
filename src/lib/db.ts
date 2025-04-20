@@ -320,6 +320,9 @@ export const createItem = async (
   stars: number = 0,
   notes: string = ''
 ): Promise<Item> => {
+  // Type check/clamp stars just in case? Or rely on DB/UI validation.
+  const validStars = Math.max(0, Math.min(5, Math.round(stars))); // Ensure 0-5
+
   try {
     if (!list_id || !creator_id || !title) {
       throw new Error('List ID, Creator ID, and Title are required to create an item');
@@ -327,7 +330,8 @@ export const createItem = async (
 
     const { data, error } = await supabase
       .from('items')
-      .insert([{ list_id, creator_id, title, stars, notes }])
+      // Use the validated star value
+      .insert([{ list_id, creator_id, title, stars: validStars, notes }])
       .select('*')
       .single();
     
@@ -368,9 +372,15 @@ export const updateItem = async (
       throw new Error('Item ID and at least one update field are required');
     }
 
+    // Validate/clamp stars if present in updates
+    const validatedUpdates = { ...updates };
+    if (validatedUpdates.stars !== undefined && validatedUpdates.stars !== null) {
+      validatedUpdates.stars = Math.max(0, Math.min(5, Math.round(validatedUpdates.stars)));
+    }
+
     const { data, error } = await supabase
       .from('items')
-      .update(updates)
+      .update(validatedUpdates) // Use validated updates
       .eq('id', id)
       .select('*')
       .single();

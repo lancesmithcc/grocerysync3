@@ -5,6 +5,7 @@ import type { List } from '../lib/db';
 import { getLists, createList, deleteList } from '../lib/db';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
+import { IoAddCircleOutline, IoTrashOutline, IoMailOutline, IoLogOutOutline } from 'react-icons/io5';
 
 const Home: React.FC = () => {
   const { user, signInWithMagicLink, signOut } = useSupabase();
@@ -103,10 +104,10 @@ const Home: React.FC = () => {
             />
             <button
               type="submit"
-              className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-4 px-6 rounded-aurora w-full font-bold disabled:opacity-50"
+              className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-3 px-6 rounded-aurora w-full font-bold disabled:opacity-50 flex items-center justify-center gap-2"
               disabled={loading}
             >
-              {loading ? 'Sending...' : 'Send Magic Link'}
+              <IoMailOutline /> {loading ? 'Sending...' : 'Send Magic Link'}
             </button>
           </form>
           {message && <p className="mt-6 text-sm text-center text-[#3CAAFF] font-light">{message}</p>}
@@ -123,13 +124,17 @@ const Home: React.FC = () => {
         <div className="flex items-center space-x-4">
           <button
             onClick={handleCreateList}
-            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-2 px-5 rounded-aurora font-bold flex items-center disabled:opacity-50"
+            className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-2 px-4 rounded-aurora font-bold flex items-center disabled:opacity-50 gap-1"
             disabled={loading}
           >
-            <span className="mr-1">+</span> New List
+            <IoAddCircleOutline className="text-lg"/> New List
           </button>
-          <button onClick={signOut} className="text-red-400 hover:text-red-300 transition-colors underline font-light">
-            Sign Out
+          <button 
+            onClick={signOut} 
+            className="text-red-400 hover:text-red-300 transition-colors font-light flex items-center gap-1 p-2 rounded-aurora hover:bg-red-900/20"
+            title="Sign Out"
+            >
+            <IoLogOutOutline /> Sign Out
           </button>
         </div>
       </div>
@@ -179,11 +184,11 @@ const Home: React.FC = () => {
                      e.preventDefault();
                      handleDeleteList(list.id, list.name);
                   }}
-                  className="text-red-600 hover:text-red-400 text-xs font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-900/30"
+                  className="text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xl p-1 rounded-aurora leading-none hover:bg-red-900/30"
                   title="Delete List"
                   disabled={loading}
                 >
-                  Delete
+                  <IoTrashOutline />
                 </button>
               )}
             </AuroraBox>
