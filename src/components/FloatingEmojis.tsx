@@ -13,17 +13,19 @@ const FloatingEmojis: React.FC = () => {
     const elements = containerRef.current?.querySelectorAll<HTMLElement>('.floating-emoji') ?? [];
     
     elements.forEach(el => {
-      // Set initial random positions
+      // Set initial random positions and scale
       gsap.set(el, {
         x: Math.random() * window.innerWidth * 0.8,
-        y: Math.random() * window.innerHeight * 0.8
+        y: Math.random() * window.innerHeight * 0.8,
+        scale: 0.5 + Math.random() // Initial scale between 0.5 and 1.5
       });
       
       // Create random animation path for each emoji
       const randomX = () => (Math.random() - 0.5) * window.innerWidth * 0.3;
       const randomY = () => (Math.random() - 0.5) * window.innerHeight * 0.3;
+      const randomScale = () => 0.5 + Math.random(); // Random scale between 0.5 and 1.5
       
-      // Create a timeline for each emoji with random bouncing motion
+      // Create a timeline for each emoji with random bouncing motion and scaling
       const tl = gsap.timeline({repeat: -1, yoyo: true});
       
       // Add 4-6 random waypoints
@@ -32,6 +34,7 @@ const FloatingEmojis: React.FC = () => {
         tl.to(el, {
           x: `+=${randomX()}`,
           y: `+=${randomY()}`,
+          scale: randomScale(), // Add random scale to animation
           duration: 10 + Math.random() * 20,
           ease: "sine.inOut",
         });

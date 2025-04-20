@@ -146,3 +146,5 @@
 - [x] Implement header layout with Grocery cart icon and styled text
 - [x] Create interface container with black rounded corners and aurora style borders
 - [x] Fix floating emojis visibility
+- [x] Add size variation to floating emoji animation
+- [ ] Investigate and fix star rating display (emojis and background)
