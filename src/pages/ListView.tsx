@@ -203,7 +203,7 @@ const ListView: React.FC = () => {
               placeholder="Item title"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 h-14 rounded-aurora w-full"
+              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-3 rounded-aurora w-full"
               required
             />
             <textarea
@@ -232,20 +232,23 @@ const ListView: React.FC = () => {
          </p>
       )}
       <div className="space-y-2">
-        {items.map(item => (
-          <AuroraBox key={item.id} className="flex justify-between items-center">
+        {items.map((item, index) => (
+          <AuroraBox 
+            key={item.id} 
+            className={`flex justify-between items-center my-8 pb-4 border-b border-gray-700/50`}
+          >
             <div>
               <p className={`font-bold text-lg ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
               {item.notes && <p className="text-sm text-gray-300 leading-tight mt-1">{item.notes}</p>}
             </div>
             <div className="flex items-center space-x-3">
-              <div className="flex" title={`${item.stars} star importance`}>
+              <div className="flex space-x-0.5" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
                    <button 
                       key={starValue} 
                       onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)} 
                       disabled={userRole !== 'admin' && userRole !== 'writer'} // Disable if not writer/admin
-                      className={`text-xl transition-colors disabled:opacity-50 ${starValue <= item.stars ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+                      className={`text-lg transition-colors disabled:opacity-50 ${starValue <= item.stars ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
                     >
                      {starValue <= item.stars ? <IoStar /> : <IoStarOutline />}
                    </button>

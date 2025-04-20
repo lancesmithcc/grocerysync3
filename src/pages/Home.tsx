@@ -95,7 +95,7 @@ const Home: React.FC = () => {
           <form onSubmit={handleLogin} className="w-full max-w-md flex flex-col items-center space-y-6">
             <input
               type="email"
-              className="focus-aurora p-4 w-full rounded-aurora bg-black/60 text-white border border-white/20 placeholder-white/50"
+              className="aurora-border-pulse w-full rounded-aurora p-3 text-black bg-white focus:bg-gray-100 transition-colors placeholder-gray-500"
               placeholder="Enter your email"
               value={email}
               onChange={e => setEmail(e.target.value)}
