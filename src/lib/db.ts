@@ -328,104 +328,28 @@ export const createItem = async (
       throw new Error('List ID, Creator ID, and Title are required to create an item');
     }
 
-    // Log the creator_id being used for insertion
     console.log(`Attempting to insert item with creator_id: ${creator_id}`);
 
-    // Check current auth user right before insert
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.error('Auth Error or no user found right before insert:', authError);
-      throw new Error('User session not found before inserting item');
-    }
-    console.log(`Verified auth user ID before insert: ${user.id}`);
-    if (user.id !== creator_id) {
-        console.warn(`Mismatch! Auth user ID (${user.id}) !== creator_id (${creator_id})`);
-    }
-
-    // Try using a direct fetch to the Supabase REST API
-    console.log('Trying direct fetch to Supabase REST API...');
-    try {
-      const apiUrl = `${supabaseUrl}/rest/v1/items`;
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': supabaseAnonKey,
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify({
-          list_id,
-          creator_id,
-          title,
-          stars: validStars,
-          notes,
-          done: false
-        })
-      });
-
-      if (!response.ok) {
-        console.error('Direct fetch failed with status:', response.status);
-        const errorText = await response.text();
-        console.error('Response body:', errorText);
-        throw new Error(`Direct API request failed: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log('Successfully inserted item with direct fetch:', data);
-      
-      if (Array.isArray(data) && data.length > 0) {
-        return data[0] as Item;
-      }
-      
-      // Fallback - try to fetch the item we just inserted
-      console.log('Fetching newly created item...');
-    } catch (directApiError) {
-      console.error('Error in direct API call:', directApiError);
-    }
-
-    // Fallback to fetching the newest item that matches our criteria
-    console.log('Attempting to fetch newly created item...');
-    const { data: newItems, error: fetchError } = await supabase
+    const { data, error } = await supabase
       .from('items')
+      .insert({
+        list_id,
+        creator_id,
+        title,
+        stars: validStars,
+        notes,
+        done: false
+      })
       .select('*')
-      .eq('list_id', list_id)
-      .eq('creator_id', creator_id)
-      .eq('title', title)
-      .order('created_at', { ascending: false })
-      .limit(1);
+      .single();
     
-    if (fetchError) {
-      console.error('Error fetching new item:', fetchError);
-      return { 
-        id: 'temp-id', 
-        list_id, 
-        creator_id, 
-        title, 
-        stars: validStars, 
-        notes, 
-        done: false,
-        created_at: new Date().toISOString() 
-      } as Item;
+    if (error) {
+      console.error('Error inserting item:', error);
+      throw error;
     }
     
-    if (newItems && newItems.length > 0) {
-      console.log('Successfully fetched new item:', newItems[0]);
-      return newItems[0];
-    }
-    
-    // Fallback return
-    return { 
-      id: 'temp-id', 
-      list_id, 
-      creator_id, 
-      title, 
-      stars: validStars, 
-      notes, 
-      done: false,
-      created_at: new Date().toISOString() 
-    } as Item;
+    console.log('Successfully inserted item:', data);
+    return data;
   } catch (error) {
     console.error('Error in createItem:', error);
     throw error instanceof Error ? error : new Error('Failed to create item');

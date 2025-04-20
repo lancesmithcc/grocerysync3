@@ -15,6 +15,8 @@
    - [x] Inconsistent error logging
    - [x] Insufficient error messages
 3. The Invite page was not implemented yet (just a placeholder)
+4. Items not persisting in the database:
+   - [x] The createItem function was using a fallback that returned temporary items with 'temp-id' instead of properly saving to the database
 
 ## Tasks to Complete
 - [x] Fix the `createList` function in db.ts to use the correct field names
@@ -23,6 +25,7 @@
 - [x] Add consistent error logging across all database functions
 - [x] Implement the Invite feature to allow users to accept invitations
 - [x] Add invite generation functionality to ListView
+- [x] Fix item persistence issue in createItem function
 - [ ] Test list creation functionality
 - [ ] Add any missing features to the application
 - [ ] Consider code refactoring if any file exceeds 500 lines
