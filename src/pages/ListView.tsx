@@ -12,7 +12,7 @@ import {
   getListUserRole
 } from '../lib/db';
 import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline } from 'react-icons/io5';
-import logo from '../assets/icon.svg';
+import Header from '../components/Header';
 
 // Helper component for clickable stars input using EMOJIS
 const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> = ({ value, onChange }) => {
@@ -25,7 +25,7 @@ const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> 
           type="button"
           onClick={() => onChange(starValue === value ? 0 : starValue)}
           // Ensuring transparent background
-          className="text-xl transition-transform hover:scale-110 bg-transparent border-0 shadow-none p-0"
+          className="text-xl transition-transform hover:scale-110 !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0"
           title={`${starValue} star${starValue > 1 ? 's' : ''}`}
         >
           {/* Use emoji characters */} 
@@ -148,16 +148,8 @@ const ListView: React.FC = () => {
   const canAddItem = userRole === 'writer' || userRole === 'admin';
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <img src={logo} alt="GrocerySync Logo" className="h-8 w-8" />
-          <span className="text-xl font-bold">GrocerySync</span>
-        </div>
-        <div className="text-sm text-gray-200">
-          {user?.email}
-        </div>
-      </div>
+    <div className="p-4 space-y-4 h-screen overflow-auto">
+      <Header showEmail={true} />
       <div className="flex justify-between items-center">
         <Link to="/" className="text-sm text-blue-300">&larr; Back to Lists</Link>
         {userRole === 'admin' && (
@@ -260,7 +252,7 @@ const ListView: React.FC = () => {
                     key={starValue}
                     onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)}
                     disabled={userRole !== 'admin' && userRole !== 'writer'}
-                    className="bg-transparent border-0 shadow-none p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="!bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {starValue <= item.stars ? '⭐' : '☆'}
                   </button>

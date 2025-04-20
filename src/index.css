@@ -47,6 +47,7 @@ html, body {
   background-color: #000000;
   border-radius: 30px;
   padding: 20px;
+  opacity: 0.8;
 }
 
 @keyframes aurora-flow {
@@ -105,9 +106,10 @@ button {
   font-size: 1em;
   font-weight: 700;
   font-family: inherit;
-  background: linear-gradient(135deg, #4e338c, #236597, #2d8d50, #4a3186);
+  background: linear-gradient(135deg, #236597, #4a3186);
   cursor: pointer;
   transition: border-color 0.25s;
+  margin:10px
 }
 button:hover {
   background: linear-gradient(135deg, #362362, #113048, #1d5833, #20153a);
@@ -116,6 +118,10 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+input.aurora-border-pulse{
+  background:#fff !important;
+  color:#333 !important;
+  padding:13px 20px !important;}
 
 @media (prefers-color-scheme: light) {
   :root {

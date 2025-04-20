@@ -74,6 +74,9 @@
 - [x] Tighten line height between title and notes
 - [x] Increase input field padding
 - [x] Ensure all input fields have white background with black text
+- [x] Use Header component on ListView for consistent shopping cart icon and text
+- [x] Make star buttons fully transparent with no default button background or padding
+- [x] Allow ListView page to scroll when content exceeds viewport height
 
 ## Testing & Performance
 - [ ] Write unit tests for key components
