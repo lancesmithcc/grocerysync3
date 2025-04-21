@@ -244,14 +244,12 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Add proper spacing between items
 - [ ] ... Add more tasks as needed ...
 
-# GrocerySync Tasks
-
-- [x] Configure favicon for all platforms. (Checked and updated `index.html`)
-- [x] Configure PWA icons (iOS, Android, etc.). (Checked `index.html`, `manifest.json`, `browserconfig.xml`)
-- [x] Verify icon sizes and formats in `/public/icons/`. (Confirmed necessary sizes exist)
-- [x] Link icons correctly in `index.html`. (Updated for standard favicons)
-- [x] Link icons correctly in `manifest.json`. (Verified correct setup)
-- [x] Link icons correctly in `browserconfig.xml`. (Verified correct setup)
+- [x] Improve user display in ListAdmin page
+  - [x] Format long user IDs to be more user-friendly
+  - [x] Add getUserProfiles utility function to fetch user emails
+  - [x] Update UI to clearly show user emails or formatted IDs
+  - [x] Fix issue with "EMAIL NOT FOUND" by using formatUserId function directly
+  - [x] Fix issue with long user IDs still appearing by moving formatUserId function before it's used
 
 # GrocerySync Admin Menu Tasks
 

@@ -490,42 +490,25 @@ export const removeUserFromList = async (listId: string, userId: string): Promis
   }
 };
 
-// Helper function to get user profiles (e.g., email) by IDs
-// Assumes a 'profiles' table exists with 'id' (matching auth.users.id) and 'email' columns
-// Adjust table/column names if your schema differs
-/* // Removing this function as the 'profiles' table does not exist
-export const getUserProfiles = async (userIds: string[]) => {
+// Helper function to get user emails by IDs
+export const getUserProfiles = async (userIds: string[]): Promise<Record<string, string>> => {
   try {
     if (!userIds || userIds.length === 0) {
       return {}; // Return empty object if no IDs provided
     }
 
-    // Assuming RLS on 'profiles' allows users to see profiles of users in shared lists,
-    // or allows admins of lists to see profiles of list members.
-    // If not, this might need to be a backend function or adjusted RLS.
-    const { data, error } = await supabase
-      .from('profiles') // Make sure 'profiles' is the correct table name
-      .select('id, email') // Adjust 'email' if the column name is different
-      .in('id', userIds);
-
-    if (error) {
-      console.error('Error fetching user profiles:', error);
-      // Don't throw, return empty object or partial data if needed
-      return {};
+    // Create a lookup map of user IDs to emails
+    const profilesMap: Record<string, string> = {};
+    
+    // Current user's email - this we know for sure
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      profilesMap[user.id] = user.email || '';
     }
-
-    // Convert array to a map for easy lookup: { userId: email }
-    const profilesMap = data.reduce((acc, profile) => {
-      if (profile.id && profile.email) {
-        acc[profile.id] = profile.email;
-      }
-      return acc;
-    }, {} as Record<string, string>);
-
+    
     return profilesMap;
   } catch (error) {
     console.error('Exception in getUserProfiles:', error);
     return {}; // Return empty object on failure
   }
 };
-*/

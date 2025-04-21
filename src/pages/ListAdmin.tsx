@@ -11,6 +11,7 @@ import {
   removeUserFromList,
   generateInviteCode,
   getListUserRole,
+  getUserProfiles,
 } from '../lib/db';
 import {
   IoSaveOutline,
@@ -36,7 +37,19 @@ const ListAdmin: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [inviteCodes, setInviteCodes] = useState<{ admin?: string; writer?: string }>({});
   const [showInvites, setShowInvites] = useState<{ admin?: boolean; writer?: boolean }>({});
-
+  const [userEmails, setUserEmails] = useState<Record<string, string>>({});
+  
+  // Format user ID to be more user-friendly
+  const formatUserId = (userId: string): string => {
+    if (!userId) return 'Unknown User';
+    
+    // If it's the current user, use their email
+    if (user && userId === user.id) return user.email || userId;
+    
+    // Create a shortened user ID display
+    return `User-${userId.substring(0, 6)}`;
+  };
+  
   const fetchData = useCallback(async () => {
     if (!id || !user) return;
     setIsLoading(true);
@@ -60,14 +73,20 @@ const ListAdmin: React.FC = () => {
       // 3. Fetch List Users
       const listUsers = await getListUsers(id);
       
-      // 4. Prepare user data for display
-      // We can only get the current user's email easily from the client.
-      // For others, we will display their user_id.
-      const usersWithEmails = listUsers.map(u => ({
-        ...u,
-        // Show email only for the currently logged-in user
-        email: u.user_id === user?.id ? user.email : undefined,
-      }));
+      // 4. Fetch user emails if possible
+      const userIds = listUsers.map(u => u.user_id);
+      const emails = await getUserProfiles(userIds);
+      setUserEmails(emails);
+      
+      // 5. Prepare user data for display
+      const usersWithEmails = listUsers.map(u => {
+        // If it's the current user, use their email
+        if (user && u.user_id === user.id) {
+          return { ...u, email: user.email || formatUserId(u.user_id) };
+        }
+        // For other users, use the formatted ID
+        return { ...u, email: formatUserId(u.user_id) };
+      });
       setUsers(usersWithEmails);
 
     } catch (error) {
@@ -207,9 +226,8 @@ const ListAdmin: React.FC = () => {
           <ul className="space-y-2 mb-3">
             {shoppers.map(shopper => (
               <li key={shopper.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
-                {/* Display email if available (only for current user), otherwise user_id */}
-                <span className="text-gray-300 text-sm truncate" title={shopper.email || shopper.user_id}>
-                  {shopper.email || shopper.user_id}
+                <span className="text-gray-300 text-sm truncate" title={shopper.user_id}>
+                  {shopper.email}
                   {shopper.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
                 </span>
                 {/* Prevent removing self */}
@@ -258,10 +276,8 @@ const ListAdmin: React.FC = () => {
           <ul className="space-y-2 mb-3">
             {dependents.map(dependent => (
               <li key={dependent.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
-                {/* Display email if available (only for current user), otherwise user_id */}
-                <span className="text-gray-300 text-sm truncate" title={dependent.email || dependent.user_id}>
-                  {dependent.email || dependent.user_id}
-                  {/* It's unlikely the current user is just a dependent, but handle the case */}
+                <span className="text-gray-300 text-sm truncate" title={dependent.user_id}>
+                  {dependent.email}
                   {dependent.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
                 </span>
                 <button
