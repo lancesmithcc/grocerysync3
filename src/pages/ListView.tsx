@@ -158,7 +158,7 @@ const ListView: React.FC = () => {
         <Link to="/" className="text-sm text-blue-300">⬅️ Back to Lists </Link>
         {userRole && (
            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
-             Role: {userRole === 'admin' ? '🛒 Shopper' : '🤡 Dependent'}
+             Role: {userRole === 'admin' ? '🛒 Shopper' : '🤡 Sub'}
            </span>
         )}
         {userRole === 'admin' && (
@@ -168,7 +168,7 @@ const ListView: React.FC = () => {
               onChange={e => setInviteRole(e.target.value as 'writer' | 'admin')}
               className="text-xs bg-gray-700 text-white p-1 rounded-aurora"
             >
-              <option value="writer">Invite a 🤡 Dependent</option>
+              <option value="writer">Invite a 🤡 Sub</option>
               <option value="admin">Invite a 🛒 Shopper</option>
             </select>
             <button 
@@ -210,7 +210,7 @@ const ListView: React.FC = () => {
               <IoCopyOutline />
             </button>
           </div>
-          <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole === 'admin' ? '🛒 Shopper' : '🤡 Dependent'}</span></p>
+          <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole === 'admin' ? '🛒 Shopper' : '🤡 Sub'}</span></p>
         </div>
       )}
       

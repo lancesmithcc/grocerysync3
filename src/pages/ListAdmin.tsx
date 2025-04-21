@@ -255,7 +255,7 @@ const ListAdmin: React.FC = () => {
 
         {/* Dependents Section */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-3">🤡 Dependents (Writers)</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">🤡 Subs (Writers)</h2>
           <ul className="space-y-2 mb-3">
             {dependents.map(dependent => (
               <li key={dependent.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
