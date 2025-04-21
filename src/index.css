@@ -141,8 +141,17 @@ button {
   margin:10px
 }
 button:hover {
-  background: linear-gradient(135deg, #56389c, #113048, #1d5833, #20153a);
+  background: linear-gradient(135deg, #036f7b, #113048);
+  background-size: 300% 300%;
+    animation: aurora-butt 12s infinite linear;
 }
+  
+@keyframes aurora-butt {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
