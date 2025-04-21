@@ -429,3 +429,99 @@ export const deleteItem = async (id: string): Promise<boolean> => {
     throw error instanceof Error ? error : new Error('Failed to delete item');
   }
 };
+
+// New function to update list details (e.g., name)
+// Ensure RLS allows only admin/owner to update
+export const updateList = async (listId: string, updates: Partial<Pick<List, 'name'>>) => {
+  try {
+    if (!listId) {
+      throw new Error('List ID is required to update a list');
+    }
+    if (!updates || Object.keys(updates).length === 0) {
+      throw new Error('No updates provided');
+    }
+
+    const { data, error } = await supabase
+      .from('lists')
+      .update(updates)
+      .eq('id', listId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating list:', error);
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    console.error('Exception in updateList:', error);
+    throw error instanceof Error ? error : new Error('Failed to update list');
+  }
+};
+
+// New function to remove a user from a list
+// Ensure RLS allows only admin/owner to remove users
+export const removeUserFromList = async (listId: string, userId: string): Promise<boolean> => {
+  try {
+    if (!listId || !userId) {
+      throw new Error('List ID and User ID are required to remove a user');
+    }
+    
+    // Check if the user being removed is the owner - prevent owner removal (optional, depends on desired logic)
+    // You might want to handle ownership transfer instead.
+    // For now, we assume RLS prevents critical errors, but an explicit check could be added.
+    
+    const { error } = await supabase
+      .from('list_users')
+      .delete()
+      .eq('list_id', listId)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error removing user from list:', error);
+      throw error;
+    }
+    return true;
+  } catch (error) {
+    console.error('Exception in removeUserFromList:', error);
+    throw error instanceof Error ? error : new Error('Failed to remove user from list');
+  }
+};
+
+// Helper function to get user profiles (e.g., email) by IDs
+// Assumes a 'profiles' table exists with 'id' (matching auth.users.id) and 'email' columns
+// Adjust table/column names if your schema differs
+export const getUserProfiles = async (userIds: string[]) => {
+  try {
+    if (!userIds || userIds.length === 0) {
+      return {}; // Return empty object if no IDs provided
+    }
+
+    // Assuming RLS on 'profiles' allows users to see profiles of users in shared lists,
+    // or allows admins of lists to see profiles of list members.
+    // If not, this might need to be a backend function or adjusted RLS.
+    const { data, error } = await supabase
+      .from('profiles') // Make sure 'profiles' is the correct table name
+      .select('id, email') // Adjust 'email' if the column name is different
+      .in('id', userIds);
+
+    if (error) {
+      console.error('Error fetching user profiles:', error);
+      // Don't throw, return empty object or partial data if needed
+      return {};
+    }
+
+    // Convert array to a map for easy lookup: { userId: email }
+    const profilesMap = data.reduce((acc, profile) => {
+      if (profile.id && profile.email) {
+        acc[profile.id] = profile.email;
+      }
+      return acc;
+    }, {} as Record<string, string>);
+
+    return profilesMap;
+  } catch (error) {
+    console.error('Exception in getUserProfiles:', error);
+    return {}; // Return empty object on failure
+  }
+};

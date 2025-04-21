@@ -11,7 +11,7 @@ import {
   generateInviteCode, 
   getListUserRole
 } from '../lib/db';
-import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline } from 'react-icons/io5';
+import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline, IoSettingsOutline } from 'react-icons/io5';
 import Header from '../components/Header';
 
 // Helper component for clickable stars input using EMOJIS
@@ -155,7 +155,7 @@ const ListView: React.FC = () => {
     <div className="p-4 space-y-4">
       <Header showEmail={true} />
       <div className="flex justify-between items-center">
-        <Link to="/" className="text-sm text-blue-300">&larr; Back to Lists</Link>
+        <Link to="/" className="text-sm text-blue-300">⬅️ Back to Lists </Link>
         {userRole && (
            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
              Role: {userRole === 'admin' ? '🛒 Shopper' : '🤡 Dependent'}
@@ -178,6 +178,13 @@ const ListView: React.FC = () => {
             >
               <IoPersonAddOutline className="mr-1" /> Invite
             </button>
+            <Link 
+              to={`/lists/${id}/admin`} 
+              className="text-xl text-gray-400 hover:text-white"
+              title="List Settings"
+            >
+              <IoSettingsOutline />
+            </Link>
           </div>
         )}
       </div>

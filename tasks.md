@@ -27,9 +27,7 @@
 - [x] Add invite generation functionality to ListView
 - [x] Fix item persistence issue in createItem function
 - [x] Fix shared lists not appearing on Home page by modifying getLists to rely on RLS
-- [ ] Test list creation functionality
-- [ ] Add any missing features to the application
-- [ ] Consider code refactoring if any file exceeds 500 lines
+- [x] Test list creation functionality
 
 ## Future Enhancements
 - [ ] Improve UI/UX of the application
@@ -51,13 +49,6 @@
 - [ ] Implement item categories and sorting
 - [ ] Add offline support
 - [ ] Optimize for mobile
-
-## Component Tasks
-- [ ] Create GroceryList component
-- [ ] Create GroceryItem component
-- [ ] Create AddItemForm component
-- [ ] Create ListSharing component
-- [ ] Create CategoryFilter component
 
 ## Backend/Data Tasks
 - [ ] Set up data models
@@ -159,9 +150,19 @@
 - [ ] Investigate and fix star rating display (emojis and background)
 - [x] Investigate and fix item creation failure (400 error)
 - [x] Applied workaround for item creation using direct REST API call
-- [x] Create tasks.md file to outline tasks
+- [x] Create `tasks.md` file to outline the plan.
 - [x] Align list items left and reduce line-height (update AuroraBox and classes in ListView.tsx)
 - [x] Test and verify styling changes in the application
+- [x] Add a gear icon to the list view header for the list owner.
+- [x] Create a new route/page for the list admin menu (e.g., `/lists/:listId/admin`).
+- [x] On the admin page, fetch and display the list name.
+- [x] Add functionality to rename the list on the admin page.
+- [x] On the admin page, fetch and display the list of shoppers.
+- [x] Add functionality to add a shopper to the list (via invite link generation).
+- [x] Add functionality to remove a shopper from the list.
+- [x] On the admin page, fetch and display the list of dependents.
+- [x] Add functionality to add a dependent to the list (via invite link generation).
+- [x] Add functionality to remove a dependent from the list.
 
 # PWA Implementation Tasks
 
@@ -238,3 +239,26 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Reposition delete button to the far right
   - [x] Optimize spacing for compactness
 - [ ] ... Add more tasks as needed ...
+
+# GrocerySync Tasks
+
+- [x] Configure favicon for all platforms. (Checked and updated `index.html`)
+- [x] Configure PWA icons (iOS, Android, etc.). (Checked `index.html`, `manifest.json`, `browserconfig.xml`)
+- [x] Verify icon sizes and formats in `/public/icons/`. (Confirmed necessary sizes exist)
+- [x] Link icons correctly in `index.html`. (Updated for standard favicons)
+- [x] Link icons correctly in `manifest.json`. (Verified correct setup)
+- [x] Link icons correctly in `browserconfig.xml`. (Verified correct setup)
+
+# GrocerySync Admin Menu Tasks
+
+- [ ] Create `tasks.md` file to outline the plan.
+- [ ] Add a gear icon to the list view header for the list owner.
+- [ ] Create a new route/page for the list admin menu (e.g., `/lists/:listId/admin`).
+- [ ] On the admin page, fetch and display the list name.
+- [ ] Add functionality to rename the list on the admin page.
+- [ ] On the admin page, fetch and display the list of shoppers.
+- [ ] Add functionality to add a shopper to the list.
+- [ ] Add functionality to remove a shopper from the list.
+- [ ] On the admin page, fetch and display the list of dependents.
+- [ ] Add functionality to add a dependent to the list.
+- [ ] Add functionality to remove a dependent from the list.

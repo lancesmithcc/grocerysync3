@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ListView from './pages/ListView'
 import Invite from './pages/Invite'
+import ListAdmin from './pages/ListAdmin'
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/list/:id" element={<ListView />} />
               <Route path="/invite/:code" element={<Invite />} />
+              <Route path="/lists/:id/admin" element={<ListAdmin />} />
             </Routes>
           </div>
         </div>
