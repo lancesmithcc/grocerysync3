@@ -227,3 +227,13 @@ All the necessary files for PWA functionality have been created. To maintain ico
    - Test on multiple iOS devices if possible
    - Verify the icon appears correctly on the home screen
    - Verify the splash screen appears on app launch
+
+# GrocerySync Tasks
+
+- [x] Refine ListView item layout
+  - [x] Adjust title style (font size, line height)
+  - [x] Adjust notes style (font size, line height)
+  - [x] Convert interactive stars to static display
+  - [x] Reposition delete button to the far right
+  - [x] Optimize spacing for compactness
+- [ ] ... Add more tasks as needed ...
