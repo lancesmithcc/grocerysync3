@@ -269,3 +269,15 @@ All the necessary files for PWA functionality have been created. To maintain ico
 
 - [ ] Debug CSS animations (background breathing, aurora effects)
 - [ ] Ensure animations are applied correctly to HTML elements
+
+# GrocerySync Account Management Tasks
+
+- [x] Create account settings page
+  - [x] Add user_profiles table to database schema
+  - [x] Create SQL file with appropriate RLS policies
+  - [x] Add user profile type and CRUD functions to db.ts
+  - [x] Create AccountSettings.tsx component
+  - [x] Add route to account settings in App.tsx
+  - [x] Update Header component with account settings link
+  - [x] Modify getUserProfiles to fetch usernames
+  - [x] Update ListAdmin to display usernames when available

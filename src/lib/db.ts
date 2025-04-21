@@ -39,6 +39,14 @@ export type InviteCode = {
   expires_at: string;
 };
 
+export type UserProfile = {
+  id: string;
+  user_id: string;
+  username: string;
+  created_at: string;
+  updated_at: string;
+};
+
 // Lists CRUD
 export async function createList(name: string, userId: string) {
   try {
@@ -506,9 +514,136 @@ export const getUserProfiles = async (userIds: string[]): Promise<Record<string,
       profilesMap[user.id] = user.email || '';
     }
     
+    // Try to get usernames from user_profiles table
+    const { data: profiles, error } = await supabase
+      .from('user_profiles')
+      .select('user_id, username')
+      .in('user_id', userIds);
+      
+    if (error) {
+      console.error('Error fetching user profiles:', error);
+    } else {
+      // Add usernames to the profilesMap
+      profiles?.forEach(profile => {
+        if (profile.user_id && profile.username) {
+          profilesMap[profile.user_id] = profile.username;
+        }
+      });
+    }
+    
     return profilesMap;
   } catch (error) {
     console.error('Exception in getUserProfiles:', error);
     return {}; // Return empty object on failure
+  }
+};
+
+// User Profile functions
+export const createUserProfile = async (username: string): Promise<UserProfile> => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    
+    if (!username || username.trim().length < 3) {
+      throw new Error('Username must be at least 3 characters');
+    }
+    
+    // Check if profile exists
+    const { data: existingProfile } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+      
+    if (existingProfile) {
+      // If profile exists, update it
+      return updateUserProfile(username);
+    }
+    
+    // Create new profile
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .insert({
+        user_id: user.id,
+        username,
+      })
+      .select('*')
+      .single();
+      
+    if (error) {
+      console.error('Error creating user profile:', error);
+      throw error;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Exception in createUserProfile:', error);
+    throw error instanceof Error ? error : new Error('Failed to create user profile');
+  }
+};
+
+export const getUserProfile = async (): Promise<UserProfile | null> => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return null;
+    }
+    
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+      
+    if (error) {
+      if (error.code === 'PGRST116') { // No results found
+        return null;
+      }
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Exception in getUserProfile:', error);
+    return null;
+  }
+};
+
+export const updateUserProfile = async (username: string): Promise<UserProfile> => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    
+    if (!username || username.trim().length < 3) {
+      throw new Error('Username must be at least 3 characters');
+    }
+    
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .update({ 
+        username,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id)
+      .select('*')
+      .single();
+      
+    if (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Exception in updateUserProfile:', error);
+    throw error instanceof Error ? error : new Error('Failed to update user profile');
   }
 };

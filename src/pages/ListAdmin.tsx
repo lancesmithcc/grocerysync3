@@ -43,6 +43,11 @@ const ListAdmin: React.FC = () => {
   const formatUserId = (userId: string): string => {
     if (!userId) return 'Unknown User';
     
+    // If the username is available in the user emails map, use it
+    if (userEmails[userId]) {
+      return userEmails[userId];
+    }
+    
     // If it's the current user, use their email
     if (user && userId === user.id) return user.email || userId;
     

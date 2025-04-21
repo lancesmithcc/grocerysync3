@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import ListView from './pages/ListView'
 import Invite from './pages/Invite'
 import ListAdmin from './pages/ListAdmin'
+import AccountSettings from './pages/AccountSettings'
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               <Route path="/list/:id" element={<ListView />} />
               <Route path="/invite/:code" element={<Invite />} />
               <Route path="/lists/:id/admin" element={<ListAdmin />} />
+              <Route path="/account" element={<AccountSettings />} />
             </Routes>
           </div>
         </div>
