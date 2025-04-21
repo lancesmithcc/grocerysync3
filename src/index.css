@@ -16,6 +16,20 @@ html, body {
   min-height: 90vh;
   margin: 0;
   padding: 0;
+  animation: breathyGradient 6s ease-in-out infinite;
+  background-size: 400% 400%;
+  background-repeat: no-repeat;
+}
+@keyframes breathyGradient {
+  0% {
+    background: radial-gradient(circle, #000000, #333333);
+  }
+  50% {
+    background: radial-gradient(circle, #222222, #666666);
+  }
+  100% {
+    background: radial-gradient(circle, #000000, #333333);
+  }
 }
 body.div{margin:20px;}
 /* Define explicit border-radius */
