@@ -159,7 +159,7 @@ const Home: React.FC = () => {
             className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-3 px-6 rounded-aurora font-bold"
             disabled={loading}
           >
-            Create Your First List
+            Create a List!
           </button>
         </div>
       )}

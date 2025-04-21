@@ -160,6 +160,9 @@
 - [ ] Investigate and fix star rating display (emojis and background)
 - [x] Investigate and fix item creation failure (400 error)
 - [x] Applied workaround for item creation using direct REST API call
+- [x] Create tasks.md file to outline tasks
+- [x] Align list items left and reduce line-height (update AuroraBox and classes in ListView.tsx)
+- [x] Test and verify styling changes in the application
 
 # PWA Implementation Tasks
 
