@@ -4,6 +4,10 @@
   input {
     @apply bg-white text-black p-6 rounded-aurora focus:bg-gray-100 transition-colors;
   }
+  /* Style for star buttons: remove padding/margins and transparent background */
+  .star-btn {
+    @apply p-0 m-0 bg-transparent border-0 shadow-none;
+  }
 }
 @tailwind components;
 @tailwind utilities;

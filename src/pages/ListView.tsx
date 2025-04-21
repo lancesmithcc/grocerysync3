@@ -25,7 +25,7 @@ const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> 
           type="button"
           onClick={() => onChange(starValue === value ? 0 : starValue)}
           // Ensuring transparent background
-          className="text-xl transition-transform hover:scale-110 !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0"
+          className="star-btn text-xl transition-transform hover:scale-110 !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0"
           title={`${starValue} star${starValue > 1 ? 's' : ''}`}
         >
           {/* Use emoji characters */} 
@@ -242,8 +242,8 @@ const ListView: React.FC = () => {
             className="flex flex-col items-start my-3 pb-4 space-y-1 relative"
           >
             <div>
-              <p className={`text-[18px] font-bold ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
-              {item.notes && <p className="text-[14px] text-gray-300 leading-none mt-0.5">{item.notes}</p>}
+              <p className={`text-[18px] font-bold text-left ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
+              {item.notes && <p className="text-[14px] text-gray-300 leading-none mt-0.5 text-left">{item.notes}</p>}
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex space-x-1 text-sm" title={`${item.stars} star importance`}>
@@ -252,7 +252,7 @@ const ListView: React.FC = () => {
                     key={starValue}
                     onClick={() => handleUpdateStars(item, starValue === item.stars ? 0 : starValue)}
                     disabled={userRole !== 'admin' && userRole !== 'writer'}
-                    className="!bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {starValue <= item.stars ? '⭐' : '☆'}
                   </button>
