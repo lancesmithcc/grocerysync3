@@ -203,7 +203,7 @@ const ListAdmin: React.FC = () => {
 
         {/* Shoppers Section */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-white mb-3">🛒 Shoppers (Admins)</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">🛒 Shoppers</h2>
           <ul className="space-y-2 mb-3">
             {shoppers.map(shopper => (
               <li key={shopper.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
@@ -254,7 +254,7 @@ const ListAdmin: React.FC = () => {
 
         {/* Dependents Section */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-3">🤡 Subs (Writers)</h2>
+          <h2 className="text-xl font-semibold text-white mb-3">🤡 Subs</h2>
           <ul className="space-y-2 mb-3">
             {dependents.map(dependent => (
               <li key={dependent.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
@@ -273,18 +273,18 @@ const ListAdmin: React.FC = () => {
                 </button>
               </li>
             ))}
-             {dependents.length === 0 && <p className="text-gray-500 text-sm italic">No dependents added yet.</p>}
+             {dependents.length === 0 && <p className="text-gray-500 text-sm italic">No subs added yet.</p>}
           </ul>
            <button
              onClick={() => handleGenerateInvite('writer')}
              className="text-sm bg-blue-700 hover:bg-blue-600 text-white py-1 px-3 rounded-aurora flex items-center w-full justify-center"
              title="Generate Dependent Invite Link"
            >
-             <IoPersonAddOutline className="mr-1" /> Invite a Dependent
+             <IoPersonAddOutline className="mr-1" /> Invite a Sub
            </button>
            {showInvites.writer && inviteCodes.writer && (
              <div className="bg-blue-800/30 p-3 rounded-aurora mt-3">
-               <p className="text-xs text-gray-300 mb-1">Share this link to invite a Dependent:</p>
+               <p className="text-xs text-gray-300 mb-1">Share this link to invite a Sub:</p>
                <div className="flex items-center justify-between bg-black/50 p-2 rounded-aurora">
                  <code className="text-blue-300 break-all text-xs">
                    {`${window.location.origin}/invite/${inviteCodes.writer}`}
