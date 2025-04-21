@@ -9,23 +9,22 @@ function App() {
   return (
     <>
       <FloatingEmojis />
-      <div style={{ 
+      <div style={{
         position: 'fixed',
-        top: 0,
+        top: 20,
         left: 0,
         right: 0,
         bottom: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 50
+        zIndex: 50,
+        overflowY: 'auto'
       }}>
         <div style={{
           position: 'relative',
           width: '100%',
           maxWidth: '500px',
+          margin: '0 auto',
           borderRadius: '33px',
-          overflow: 'hidden'
+          overflow: 'visible'
         }}>
           {/* Aurora Border */}
           <div style={{

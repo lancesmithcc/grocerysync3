@@ -148,7 +148,7 @@ const ListView: React.FC = () => {
   const canAddItem = userRole === 'writer' || userRole === 'admin';
 
   return (
-    <div className="p-4 space-y-4 h-screen overflow-auto">
+    <div className="p-4 space-y-4">
       <Header showEmail={true} />
       <div className="flex justify-between items-center">
         <Link to="/" className="text-sm text-blue-300">&larr; Back to Lists</Link>
