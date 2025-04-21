@@ -60,10 +60,12 @@ const ListAdmin: React.FC = () => {
 
       // 3. Fetch List Users
       const listUsers = await getListUsers(id);
+      console.log('[ListAdmin fetchData] Raw listUsers:', listUsers);
       
       // 4. Fetch User Profiles (Emails)
       const userIds = listUsers.map(u => u.user_id);
       const profilesMap = await getUserProfiles(userIds);
+      console.log('[ListAdmin fetchData] Fetched profilesMap:', profilesMap);
 
       // 5. Combine Users with Emails
       const usersWithEmails = listUsers.map(u => ({
@@ -71,6 +73,7 @@ const ListAdmin: React.FC = () => {
         email: profilesMap[u.user_id] || 'Email not found',
       }));
       setUsers(usersWithEmails);
+      console.log('[ListAdmin fetchData] Combined usersWithEmails:', usersWithEmails);
 
     } catch (error) {
       console.error('Failed to fetch list admin data:', error);

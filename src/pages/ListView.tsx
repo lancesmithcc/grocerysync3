@@ -259,13 +259,13 @@ const ListView: React.FC = () => {
             padding="p-2"
           >
             <div className="flex-grow mr-4">
-              <p className={`text-[20px] font-bold leading-tight text-left ${item.done ? 'line-through text-gray-500' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
+              <p className={`text-[20px] font-bold leading-tight !text-left ${item.done ? 'line-through text-gray-500' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
                 {item.title}
               </p>
-              {item.notes && <p className="text-[16px] text-gray-300 leading-tight mt-0 text-left">{item.notes}</p>}
+              {item.notes && <p className="text-[16px] text-gray-300 leading-tight mt-0 !text-left">{item.notes}</p>}
               <div className="flex space-x-0 text-sm leading-none mt-1" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
-                  <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0">
+                  <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0  !text-left">
                     {starValue <= item.stars ? '⭐' : '☆'}
                   </span>
                 ))}

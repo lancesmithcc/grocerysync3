@@ -192,6 +192,8 @@ export const getListUsers = async (list_id: string): Promise<ListUser[]> => {
       .select('*')
       .eq('list_id', list_id);
     
+    console.log('[getListUsers] Fetched users for list:', list_id, data, error);
+
     if (error) throw error;
     return data || [];
   } catch (error) {
