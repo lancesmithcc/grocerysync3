@@ -262,3 +262,8 @@ All the necessary files for PWA functionality have been created. To maintain ico
 - [ ] On the admin page, fetch and display the list of dependents.
 - [ ] Add functionality to add a dependent to the list.
 - [ ] Add functionality to remove a dependent from the list.
+
+# Project Tasks
+
+- [ ] Debug CSS animations (background breathing, aurora effects)
+- [ ] Ensure animations are applied correctly to HTML elements
