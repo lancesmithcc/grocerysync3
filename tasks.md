@@ -26,6 +26,7 @@
 - [x] Implement the Invite feature to allow users to accept invitations
 - [x] Add invite generation functionality to ListView
 - [x] Fix item persistence issue in createItem function
+- [x] Fix shared lists not appearing on Home page by modifying getLists to rely on RLS
 - [ ] Test list creation functionality
 - [ ] Add any missing features to the application
 - [ ] Consider code refactoring if any file exceeds 500 lines
@@ -137,10 +138,6 @@
 [x] Hook: useSupabase() wraps auth and queries.
 [x] CRUD helpers in /lib/db.ts.
 
-10. Deploy
-
-[ ] Push to GitHub; set up Netlify.Supply env vars in site settings.
-[ ] Add grocerysync.lancesmith.cc custom domain.
 
 11. Test & polish
 

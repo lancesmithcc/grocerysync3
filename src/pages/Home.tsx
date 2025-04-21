@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   const fetchLists = () => {
     if (user) {
       setLoading(true);
-      getLists(user.id)
+      getLists()
         .then(setLists)
         .catch(err => {
           console.error('Error fetching lists:', err);

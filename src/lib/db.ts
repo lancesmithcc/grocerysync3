@@ -87,18 +87,23 @@ export async function createList(name: string, userId: string) {
   }
 }
 
-export const getLists = async (owner_uuid: string): Promise<List[]> => {
+// Rely on RLS policy "Allow read for members and owner" to filter lists
+export const getLists = async (): Promise<List[]> => {
   try {
-    if (!owner_uuid) {
-      throw new Error('Owner ID is required to fetch lists');
-    }
-
+    // Removed owner_uuid parameter and validation
     const { data, error } = await supabase
       .from('lists')
       .select('*')
-      .eq('owner_uuid', owner_uuid);
-    
-    if (error) throw error;
+      // Removed .eq('owner_uuid', owner_uuid);
+
+    if (error) {
+      // Handle potential RLS errors if the user is not logged in
+      if (error.code === '42501') { // RLS policy violation
+        console.warn('RLS violation fetching lists, likely user not authenticated or no access.');
+        return []; // Return empty array if user has no access or isn't logged in
+      }
+      throw error;
+    }
     return data || [];
   } catch (error) {
     console.error('Error in getLists:', error);
