@@ -77,6 +77,7 @@
 - [x] Use Header component on ListView for consistent shopping cart icon and text
 - [x] Make star buttons fully transparent with no default button background or padding
 - [x] Allow ListView page to scroll when content exceeds viewport height
+- [x] Add confirmation dialogs for destructive actions (list deletions and item deletions)
 
 ## Testing & Performance
 - [ ] Write unit tests for key components

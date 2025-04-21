@@ -105,8 +105,12 @@ const ListView: React.FC = () => {
     setItems(prev => prev.map(i => (i.id === updated.id ? updated : i)));
   };
 
-  const handleDelete = async (itemId: string) => {
+  const handleDelete = async (itemId: string, itemTitle?: string) => {
     if (userRole !== 'admin') return;
+    const confirmMessage = itemTitle
+      ? `💀 Are you sure you want to permanently delete the item "${itemTitle}"? This cannot be undone.`
+      : '💀 Are you sure you want to permanently delete this item? This cannot be undone.';
+    if (!window.confirm(confirmMessage)) return;
     await deleteItem(itemId);
     setItems(prev => prev.filter(i => i.id !== itemId));
   };
@@ -261,7 +265,7 @@ const ListView: React.FC = () => {
               </div>
               {userRole === 'admin' && (
                 <button
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item.id, item.title)}
                   className="text-red-500 hover:text-red-400 text-lg p-1 rounded-aurora leading-none"
                   title="Delete Item"
                 >

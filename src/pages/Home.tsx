@@ -67,7 +67,7 @@ const Home: React.FC = () => {
 
   const handleDeleteList = async (listId: string, listName: string) => {
     if (!user) return;
-    if (!confirm(`Are you sure you want to permanently delete the list "${listName}"? This cannot be undone.`)) {
+    if (!confirm(`💀 Are you sure you want to permanently delete the list "${listName}"? This cannot be undone.`)) {
       return;
     }
 
