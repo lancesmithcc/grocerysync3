@@ -243,10 +243,10 @@ const ListView: React.FC = () => {
             padding="p-2"
           >
             <div>
-              <p className={`text-[18px] font-bold leading-none text-left ${item.done ? 'line-through text-gray-400' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
+              <p className={`text-[18px] font-bold leading-none text-left ${item.done ? 'line-through text-gray-500' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>{item.title}</p>
               {item.notes && <p className="text-[14px] text-gray-300 leading-none mt-0 text-left">{item.notes}</p>}
             </div>
-            <div className="flex justify-between items-center w-full">
+            <div className="flex justify-between items-left w-full">
               <div className="flex space-x-0.5 text-sm leading-none" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
                   <button
