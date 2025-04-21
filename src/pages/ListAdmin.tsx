@@ -11,7 +11,6 @@ import {
   removeUserFromList,
   generateInviteCode,
   getListUserRole,
-  getUserProfiles,
 } from '../lib/db';
 import {
   IoSaveOutline,
@@ -60,20 +59,16 @@ const ListAdmin: React.FC = () => {
 
       // 3. Fetch List Users
       const listUsers = await getListUsers(id);
-      console.log('[ListAdmin fetchData] Raw listUsers:', listUsers);
       
-      // 4. Fetch User Profiles (Emails)
-      const userIds = listUsers.map(u => u.user_id);
-      const profilesMap = await getUserProfiles(userIds);
-      console.log('[ListAdmin fetchData] Fetched profilesMap:', profilesMap);
-
-      // 5. Combine Users with Emails
+      // 4. Prepare user data for display
+      // We can only get the current user's email easily from the client.
+      // For others, we will display their user_id.
       const usersWithEmails = listUsers.map(u => ({
         ...u,
-        email: profilesMap[u.user_id] || 'Email not found',
+        // Show email only for the currently logged-in user
+        email: u.user_id === user?.id ? user.email : undefined,
       }));
       setUsers(usersWithEmails);
-      console.log('[ListAdmin fetchData] Combined usersWithEmails:', usersWithEmails);
 
     } catch (error) {
       console.error('Failed to fetch list admin data:', error);
@@ -212,7 +207,11 @@ const ListAdmin: React.FC = () => {
           <ul className="space-y-2 mb-3">
             {shoppers.map(shopper => (
               <li key={shopper.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
-                <span className="text-gray-300 text-sm truncate" title={shopper.email}>{shopper.email || shopper.user_id}</span>
+                {/* Display email if available (only for current user), otherwise user_id */}
+                <span className="text-gray-300 text-sm truncate" title={shopper.email || shopper.user_id}>
+                  {shopper.email || shopper.user_id}
+                  {shopper.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
+                </span>
                 {/* Prevent removing self */}
                 {shopper.user_id !== user?.id && (
                   <button
@@ -223,9 +222,6 @@ const ListAdmin: React.FC = () => {
                     <IoTrashOutline />
                   </button>
                 )}
-                 {shopper.user_id === user?.id && (
-                   <span className="text-xs text-gray-500 ml-2">(You)</span>
-                 )}
               </li>
             ))}
             {shoppers.length === 0 && <p className="text-gray-500 text-sm italic">No shoppers added yet.</p>}
@@ -262,7 +258,12 @@ const ListAdmin: React.FC = () => {
           <ul className="space-y-2 mb-3">
             {dependents.map(dependent => (
               <li key={dependent.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
-                <span className="text-gray-300 text-sm truncate" title={dependent.email}>{dependent.email || dependent.user_id}</span>
+                {/* Display email if available (only for current user), otherwise user_id */}
+                <span className="text-gray-300 text-sm truncate" title={dependent.email || dependent.user_id}>
+                  {dependent.email || dependent.user_id}
+                  {/* It's unlikely the current user is just a dependent, but handle the case */}
+                  {dependent.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
+                </span>
                 <button
                   onClick={() => handleRemoveUser(dependent.user_id)}
                   className="text-red-500 hover:text-red-400 text-lg p-1 rounded-aurora leading-none flex-shrink-0 ml-2"

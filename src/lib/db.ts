@@ -493,6 +493,7 @@ export const removeUserFromList = async (listId: string, userId: string): Promis
 // Helper function to get user profiles (e.g., email) by IDs
 // Assumes a 'profiles' table exists with 'id' (matching auth.users.id) and 'email' columns
 // Adjust table/column names if your schema differs
+/* // Removing this function as the 'profiles' table does not exist
 export const getUserProfiles = async (userIds: string[]) => {
   try {
     if (!userIds || userIds.length === 0) {
@@ -527,3 +528,4 @@ export const getUserProfiles = async (userIds: string[]) => {
     return {}; // Return empty object on failure
   }
 };
+*/
