@@ -64,7 +64,8 @@
 - [ ] Implement CRUD operations for grocery items
 - [ ] Implement real-time database listeners
 - [ ] Set up user authentication system
-- [ ] Implement sharing permissions
+- [x] Refine RLS policies for items using helper function to ensure correct permissions
+- [ ] Display user role (Shopper/Dependent) on ListView
 
 ## UI Improvements
 - [ ] Design responsive layout

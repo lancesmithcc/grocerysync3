@@ -52,20 +52,47 @@ create policy "Allow delete by owner" on public.lists for delete using (
 );
 
 -- RLS policies for items
-create policy "Allow select for list members" on public.items for select using (
-  auth.uid() in (
-    select user_id from public.list_users where list_id = list_id
-  )
-);
+-- Helper function to check list membership and role
+-- Drops the function if it exists to ensure it's updated
+DROP FUNCTION IF EXISTS is_list_member(uuid, text);
+CREATE OR REPLACE FUNCTION is_list_member(list_id_check uuid, min_role text)
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM list_users
+    WHERE list_id = list_id_check
+      AND user_id = auth.uid()
+      AND (
+        (min_role = 'writer' AND role IN ('writer', 'admin')) OR
+        (min_role = 'admin' AND role = 'admin')
+      )
+  );
+$$;
 
-create policy "Allow insert by writers" on public.items for insert with check (
-  auth.uid() in (
-    select user_id from public.list_users where list_id = list_id and role in ('writer','admin')
-  )
-);
+-- Drop existing policies before recreating
+DROP POLICY IF EXISTS "Allow select for list members" ON public.items;
+DROP POLICY IF EXISTS "Allow insert by writers" ON public.items;
+DROP POLICY IF EXISTS "Allow update by writers" ON public.items; -- Drop potential old update policy
+DROP POLICY IF EXISTS "Allow delete by admins" ON public.items;
 
-create policy "Allow delete by admins" on public.items for delete using (
-  auth.uid() in (
-    select user_id from public.list_users where list_id = list_id and role = 'admin'
-  )
-); 
+-- RLS policies for items using the helper function
+create policy "Allow select for list members" on public.items 
+  for select 
+  using ( is_list_member(list_id, 'writer') );
+
+create policy "Allow insert by writers or admins" on public.items 
+  for insert 
+  with check ( is_list_member(list_id, 'writer') );
+
+create policy "Allow update by writers or admins" on public.items
+  for update
+  using ( is_list_member(list_id, 'writer') )
+  with check ( is_list_member(list_id, 'writer') );
+
+create policy "Allow delete by admins" on public.items 
+  for delete 
+  using ( is_list_member(list_id, 'admin') ); 

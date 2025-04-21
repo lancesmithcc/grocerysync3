@@ -156,6 +156,11 @@ const ListView: React.FC = () => {
       <Header showEmail={true} />
       <div className="flex justify-between items-center">
         <Link to="/" className="text-sm text-blue-300">&larr; Back to Lists</Link>
+        {userRole && (
+           <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
+             Role: {userRole === 'admin' ? '🛒 Shopper' : '🤡 Dependent'}
+           </span>
+        )}
         {userRole === 'admin' && (
           <div className="flex items-center space-x-2">
             <select 
@@ -243,7 +248,7 @@ const ListView: React.FC = () => {
         {items.map((item, index) => (
           <AuroraBox
             key={item.id}
-            className="flex items-center justify-between mb-2 relative w-full"
+            className="flex items-center justify-between mb-2 relative w-full border-b border-gray-700/50 pb-2"
             padding="p-2"
           >
             <div className="flex-grow mr-4">
