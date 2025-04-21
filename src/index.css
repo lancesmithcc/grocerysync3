@@ -137,7 +137,7 @@ button {
   margin:10px
 }
 button:hover {
-  background: linear-gradient(135deg, #362362, #113048, #1d5833, #20153a);
+  background: linear-gradient(135deg, #56389c, #113048, #1d5833, #20153a);
 }
 button:focus,
 button:focus-visible {
@@ -188,3 +188,5 @@ input.aurora-border-pulse{
     box-shadow: 0 0 0 2px rgba(60,170,255,0.6);
   }
 }
+
+.flex .flex button{background:none !important;}
