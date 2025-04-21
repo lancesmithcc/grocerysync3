@@ -11,25 +11,35 @@
 /* Ensure proper body styling */
 html, body {
   font-family: 'Jost', sans-serif;
-  background: radial-gradient(circle, #000000, #333333);
   color: white;
-  min-height: 90vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  animation: breathyGradient 6s ease-in-out infinite;
-  background-size: 400% 400%;
-  background-repeat: no-repeat;
-  transition: background 3s ease-in-out;
+  position: relative;
+  overflow: hidden;
 }
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle, #000000, #333333);
+  animation: breathyGradient 6s ease-in-out infinite;
+}
+
 @keyframes breathyGradient {
   0% {
-    background: radial-gradient(circle, #000000, #333333);
+    opacity: 1;
+    background: radial-gradient(circle, #000000, #3c0635);
   }
   50% {
-    background: radial-gradient(circle, #222222, #666666);
+    opacity: 1;
+    background: radial-gradient(circle, #222222, #2b0454);
   }
   100% {
-    background: radial-gradient(circle, #000000, #333333);
+    opacity: 1;
+    background: radial-gradient(circle, #000000, #0c2b3e);
   }
 }
 body.div{margin:20px;}
