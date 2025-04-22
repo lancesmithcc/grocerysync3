@@ -214,7 +214,7 @@ export const getListUsers = async (list_id: string): Promise<ListUser[]> => {
 export const generateInviteCode = async (
   list_id: string, 
   role: 'writer' | 'admin' = 'writer',
-  expiresIn: number = 7
+  expiresIn: number = 10
 ): Promise<InviteCode> => {
   try {
     if (!list_id) {
@@ -224,7 +224,7 @@ export const generateInviteCode = async (
     // Generate a random code
     const code = Math.random().toString(36).substring(2, 10);
     
-    // Calculate expiration date (default: 7 days)
+    // Calculate expiration date (default: 10 days)
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + expiresIn);
 
@@ -289,6 +289,12 @@ export const acceptInvite = async (code: string, user_id: string): Promise<ListU
       }
       throw listUserError;
     }
+    
+    // Delete the invite code after successful use
+    await supabase
+      .from('invite_codes')
+      .delete()
+      .eq('code', code);
     
     return listUserData;
   } catch (error) {
@@ -645,5 +651,23 @@ export const updateUserProfile = async (username: string): Promise<UserProfile> 
   } catch (error) {
     console.error('Exception in updateUserProfile:', error);
     throw error instanceof Error ? error : new Error('Failed to update user profile');
+  }
+};
+
+// Function to clean up expired invite codes
+export const cleanupExpiredInviteCodes = async (): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('invite_codes')
+      .delete()
+      .lt('expires_at', new Date().toISOString());
+    
+    if (error) {
+      console.error('Error cleaning up expired invite codes:', error);
+    } else {
+      console.log('Successfully cleaned up expired invite codes');
+    }
+  } catch (error) {
+    console.error('Error in cleanupExpiredInviteCodes:', error);
   }
 };

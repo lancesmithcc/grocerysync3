@@ -242,6 +242,11 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Ensure list items are left-aligned
   - [x] Make dividing lines between items more visible
   - [x] Add proper spacing between items
+- [x] Implement invite code expiration
+  - [x] Change default expiration from 7 to 10 days
+  - [x] Create migration for automatic cleanup of expired invite codes
+  - [x] Add client-side cleanup of expired codes when app starts
+  - [x] Delete invite codes after successful use
 - [ ] ... Add more tasks as needed ...
 
 - [x] Improve user display in ListAdmin page
@@ -289,6 +294,7 @@ All the necessary files for PWA functionality have been created. To maintain ico
 - [x] Add explicit apple-touch-icon-180x180.png file
 - [x] Update HTML head to use correct apple-touch-icon references
 - [x] Update manifest.json for modern iOS support
+- [x] Fix favicon and app icon by updating index.html references
 - [ ] Test installation on iOS device
 - [ ] Test favicon on various browsers
 - [ ] Verify icon appearance on other platforms (Android, Windows)

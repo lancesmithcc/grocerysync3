@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/db';
+import { supabase, cleanupExpiredInviteCodes } from '../lib/db';
 
 interface SupabaseContextValue {
   session: Session | null;
@@ -26,6 +26,10 @@ export const SupabaseProvider: React.FC<{ children: ReactNode }> = ({ children }
       setSession(newSession);
       setUser(newSession?.user ?? null);
     });
+
+    // Clean up expired invite codes
+    cleanupExpiredInviteCodes();
+
     return () => subscription.unsubscribe();
   }, []);
 
