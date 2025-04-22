@@ -281,3 +281,14 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Update Header component with account settings link
   - [x] Modify getUserProfiles to fetch usernames
   - [x] Update ListAdmin to display usernames when available
+
+## PWA Icon Issues
+- [x] Identify PWA icon issue on iOS and other platforms
+- [x] Verify apple-touch-icon.png is properly sized (180x180px)
+- [x] Ensure iOS meta tags are correct
+- [x] Add explicit apple-touch-icon-180x180.png file
+- [x] Update HTML head to use correct apple-touch-icon references
+- [x] Update manifest.json for modern iOS support
+- [ ] Test installation on iOS device
+- [ ] Test favicon on various browsers
+- [ ] Verify icon appearance on other platforms (Android, Windows)

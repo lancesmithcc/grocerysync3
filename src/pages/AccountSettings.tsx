@@ -87,6 +87,12 @@ const AccountSettings: React.FC = () => {
       <AuroraBox>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-white">Account Settings</h1>
+          <button 
+            onClick={() => navigate(-1)}
+            className="text-sm text-blue-300 hover:text-blue-200 transition-colors"
+          >
+            &larr; Back
+          </button>
         </div>
 
         {message && (
