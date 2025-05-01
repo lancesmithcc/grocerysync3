@@ -104,11 +104,14 @@ const ListAdmin: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [id, user]);
+  }, [id, user?.id]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    // Ensure user is loaded before fetching
+    if (user?.id) {
+      fetchData();
+    }
+  }, [fetchData, user?.id]);
 
   // *** NEW useEffect for Realtime Updates ***
   useEffect(() => {
@@ -132,18 +135,17 @@ const ListAdmin: React.FC = () => {
       .channel('public:user_profiles')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'user_profiles' },
-        handleProfileUpdate
+        // Listen for ALL events on the table temporarily for debugging
+        { event: '*', schema: 'public', table: 'user_profiles' },
+        (payload) => { // Use payload directly in log
+            console.log('>>> Realtime profile change detected:', payload);
+            handleProfileUpdate(payload); // Call original handler
+        }
       )
-      .on( // Also listen for INSERT in case a user gets a profile for the first time
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'user_profiles' },
-        handleProfileUpdate
-       )
+      // Remove the separate .on for INSERT as '*' covers it
       .subscribe((status, err) => {
         // Check for CLOSED state as potential failure indicator
         if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) { 
-          // Log potentially useful error context if available
           console.error('Realtime subscription closed, potentially failed:', err);
         } else if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
           console.log('Realtime subscribed to user_profiles changes!');
