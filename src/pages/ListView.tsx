@@ -247,7 +247,7 @@ const ListView: React.FC = () => {
           </button>
         </form>
       ) : (
-         <p className="text-sm text-gray-400 italic p-4 text-center bg-black/30 rounded-aurora">
+         <p className="text-sm text-gray-400 italic p-4 bg-black/30 rounded-aurora">
           {userRole === null ? 'Login to add items.' : 'You do not have permission to add items to this list.'}
          </p>
       )}

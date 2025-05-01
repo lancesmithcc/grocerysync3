@@ -96,13 +96,13 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {message && (
-          <div className={`p-2 rounded-aurora text-center text-sm mb-4 ${message.type === 'success' ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
+          <div className={`p-2 rounded-aurora text-sm mb-4 ${message.type === 'success' ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
             {message.text}
           </div>
         )}
 
         {isLoading ? (
-          <div className="text-center py-4 text-gray-400">Loading your profile...</div>
+          <div className="py-4 text-gray-400">Loading your profile...</div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>

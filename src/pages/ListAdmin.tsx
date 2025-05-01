@@ -230,7 +230,7 @@ const ListAdmin: React.FC = () => {
     return (
       <div className="p-4 space-y-4">
         <Header showEmail={true} />
-        <AuroraBox><p className="text-center text-gray-400">Loading settings...</p></AuroraBox>
+        <AuroraBox><p className="text-gray-400">Loading settings...</p></AuroraBox>
       </div>
     );
   }
@@ -240,8 +240,8 @@ const ListAdmin: React.FC = () => {
       <div className="p-4 space-y-4">
         <Header showEmail={true} />
         <AuroraBox>
-          <p className="text-center text-red-500">{message?.text || 'Access Denied'}</p>
-          {id && <Link to={`/list/${id}`} className="block text-center mt-4 text-sm text-blue-300">Back to List</Link>}
+          <p className="text-red-500">{message?.text || 'Access Denied'}</p>
+          {id && <Link to={`/list/${id}`} className="block mt-4 text-sm text-blue-300">Back to List</Link>}
         </AuroraBox>
       </div>
     );
@@ -258,7 +258,7 @@ const ListAdmin: React.FC = () => {
         </div>
 
         {message && (
-          <div className={`p-2 rounded-aurora text-center text-sm mb-4 ${message.type === 'success' ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
+          <div className={`p-2 rounded-aurora text-sm mb-4 ${message.type === 'success' ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
             {message.text}
           </div>
         )}

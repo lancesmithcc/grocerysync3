@@ -140,19 +140,19 @@ const Home: React.FC = () => {
       </div>
       
       {message && (
-         <p className="my-4 text-sm text-center text-[#3CAAFF] font-light bg-black/30 p-2 rounded-aurora">
+         <p className="my-4 text-sm text-[#3CAAFF] font-light bg-black/30 p-2 rounded-aurora">
           {message}
          </p>
       )}
 
       {loading && !message && (
-         <p className="my-4 text-sm text-center text-gray-400 font-light bg-black/30 p-2 rounded-aurora">
+         <p className="my-4 text-sm text-gray-400 font-light bg-black/30 p-2 rounded-aurora">
           Loading lists...
          </p>
       )}
 
       {!loading && lists.length === 0 && !message && (
-        <div className="text-center py-16 text-gray-400 border border-dashed border-[#3CAAFF]/30 rounded-aurora bg-black/50">
+        <div className="py-16 text-gray-400 border border-dashed border-[#3CAAFF]/30 rounded-aurora bg-black/50">
           <p className="mb-6 font-light">You don't have any grocery lists yet</p>
           <button
             onClick={handleCreateList}
