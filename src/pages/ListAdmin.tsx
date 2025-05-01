@@ -158,24 +158,34 @@ const ListAdmin: React.FC = () => {
       .channel('public:user_profiles')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'user_profiles' },
-        handleProfileUpdate // Directly use the refined handler
+        { 
+          event: '*'
+        , schema: 'public'
+        , table: 'user_profiles'
+        }, 
+        (payload: any) => {
+            // Log *any* payload received on this channel for this table
+            console.log('>>> RAW Realtime Event Received for user_profiles:', payload);
+            // Still call the original handler to process if possible
+            handleProfileUpdate(payload); 
+        }
       )
       .subscribe((status, err) => {
-        // Check for CLOSED state as potential failure indicator
         if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) { 
-          console.error('Realtime subscription closed, potentially failed:', err);
+          console.error('[Subscription Status] Realtime subscription closed, potentially failed:', err);
         } else if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
-          console.log('Realtime subscribed to user_profiles changes!');
+          console.log('[Subscription Status] Realtime subscribed to user_profiles changes!');
+        } else {
+          console.log(`[Subscription Status] Status: ${status}`);
         }
       });
 
     // Cleanup function to remove the subscription when the component unmounts
     return () => {
-      console.log('Unsubscribing from user_profiles changes');
+      console.log('[Cleanup] Unsubscribing from user_profiles changes');
       supabase.removeChannel(channel);
     };
-  }, [listUserIds]); // Re-run this effect if the list of user IDs changes
+  }, [listUserIds]); // Keep dependency for now
 
   const handleRename = async (e: React.FormEvent) => {
     e.preventDefault();
