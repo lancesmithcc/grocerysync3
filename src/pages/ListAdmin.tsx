@@ -42,24 +42,18 @@ const ListAdmin: React.FC = () => {
   const [userEmails, setUserEmails] = useState<Record<string, string>>({});
   const [listUserIds, setListUserIds] = useState<string[]>([]);
   
-  // Format user ID to be more user-friendly
+  // Format user ID (reads userEmails state)
   const formatUserId = (userId: string): string => {
     if (!userId) return 'Unknown User';
-    
-    // If the username is available in the user emails map, use it
     if (userEmails[userId]) {
-      return userEmails[userId];
+      return userEmails[userId]; // Use username from state if available
     }
-    
-    // If it's the current user, use their email
-    if (user && userId === user.id) return user.email || userId;
-    
-    // Create a shortened user ID display
-    return `User-${userId.substring(0, 6)}`;
+    if (user && userId === user.id) return user.email || userId; // Fallback for self
+    return `User-${userId.substring(0, 6)}`; // Generic fallback
   };
   
   const fetchData = useCallback(async () => {
-    if (!id || !user) return;
+    if (!id || !user?.id) return;
     setIsLoading(true);
     setMessage(null);
     try {
@@ -78,25 +72,15 @@ const ListAdmin: React.FC = () => {
       setListDetails(details);
       setNewName(details.name);
 
-      // 3. Fetch List Users
-      const listUsers = await getListUsers(id);
+      // 3. Fetch List Users (just the raw data)
+      const listUsersData = await getListUsers(id);
+      setUsers(listUsersData); // <<< Set the raw list users state
       
-      // 4. Fetch user emails if possible & store user IDs
-      const userIds = listUsers.map(u => u.user_id);
+      // 4. Fetch user profiles (usernames) and store IDs
+      const userIds = listUsersData.map(u => u.user_id);
       setListUserIds(userIds);
-      const emails = await getUserProfiles(userIds);
-      setUserEmails(emails);
-      
-      // 5. Prepare user data for display
-      const usersWithEmails = listUsers.map(u => {
-        // If it's the current user, use their email
-        if (user && u.user_id === user.id) {
-          return { ...u, email: user.email || formatUserId(u.user_id) };
-        }
-        // For other users, use the formatted ID
-        return { ...u, email: formatUserId(u.user_id) };
-      });
-      setUsers(usersWithEmails);
+      const profilesMap = await getUserProfiles(userIds);
+      setUserEmails(profilesMap); // <<< Set the usernames map state
 
     } catch (error) {
       console.error('Failed to fetch list admin data:', error);
@@ -309,7 +293,7 @@ const ListAdmin: React.FC = () => {
             {shoppers.map(shopper => (
               <li key={shopper.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
                 <span className="text-gray-300 text-sm truncate" title={shopper.user_id}>
-                  {shopper.email}
+                  {formatUserId(shopper.user_id)}
                   {shopper.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
                 </span>
                 {/* Prevent removing self */}
@@ -359,8 +343,7 @@ const ListAdmin: React.FC = () => {
             {dependents.map(dependent => (
               <li key={dependent.user_id} className="flex justify-between items-center bg-black/30 p-2 rounded-aurora">
                 <span className="text-gray-300 text-sm truncate" title={dependent.user_id}>
-                  {dependent.email}
-                  {dependent.user_id === user?.id && <span className="text-xs text-gray-500 ml-1">(You)</span>}
+                  {formatUserId(dependent.user_id)}
                 </span>
                 <button
                   onClick={() => handleRemoveUser(dependent.user_id)}
