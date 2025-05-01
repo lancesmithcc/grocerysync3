@@ -119,14 +119,37 @@ const ListAdmin: React.FC = () => {
 
     // Define the subscription callback
     const handleProfileUpdate = async (payload: any) => {
-      console.log('Profile change detected:', payload);
-      // Refetch profiles for the users currently in the list
-      try {
-        const updatedEmails = await getUserProfiles(listUserIds);
-        setUserEmails(updatedEmails);
-        console.log('Refetched profiles:', updatedEmails);
-      } catch (error) {
-        console.error('Error refetching profiles after update:', error);
+      console.log('>>> Realtime profile change detected:', payload);
+      if (payload.new?.user_id && payload.new?.username) {
+        const changedUserId = payload.new.user_id;
+        const newUsername = payload.new.username;
+        
+        // Update the specific user in the state map
+        setUserEmails(currentEmails => ({
+          ...currentEmails,
+          [changedUserId]: newUsername
+        }));
+        console.log(`Updated username for ${changedUserId} to ${newUsername} in state.`);
+        
+      } else if (payload.eventType === 'INSERT' && payload.new?.user_id && payload.new?.username) {
+          // Handle new profile creation if needed (optional, depends on flow)
+           const changedUserId = payload.new.user_id;
+           const newUsername = payload.new.username;
+           setUserEmails(currentEmails => ({
+             ...currentEmails,
+             [changedUserId]: newUsername
+           }));
+          console.log(`Added new profile for ${changedUserId} (${newUsername}) to state.`);
+      } else {
+        // If the payload doesn't have what we need, maybe refetch all just in case?
+        // This is less efficient but safer if payload structure is uncertain.
+        console.warn('Realtime payload structure unclear, refetching all profiles as fallback.');
+        try {
+            const updatedEmails = await getUserProfiles(listUserIds);
+            setUserEmails(updatedEmails);
+        } catch (error) {
+             console.error('Error refetching profiles after unclear update:', error);
+        }
       }
     };
 
@@ -135,14 +158,9 @@ const ListAdmin: React.FC = () => {
       .channel('public:user_profiles')
       .on(
         'postgres_changes',
-        // Listen for ALL events on the table temporarily for debugging
         { event: '*', schema: 'public', table: 'user_profiles' },
-        (payload) => { // Use payload directly in log
-            console.log('>>> Realtime profile change detected:', payload);
-            handleProfileUpdate(payload); // Call original handler
-        }
+        handleProfileUpdate // Directly use the refined handler
       )
-      // Remove the separate .on for INSERT as '*' covers it
       .subscribe((status, err) => {
         // Check for CLOSED state as potential failure indicator
         if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) { 
