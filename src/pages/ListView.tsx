@@ -255,7 +255,7 @@ const ListView: React.FC = () => {
         {items.map((item, index) => (
           <AuroraBox
             key={item.id}
-            className="flex flex-row items-start justify-between relative w-full border border-[#333] rounded-aurora m-[10px]"
+            className="flex flex-row items-start justify-between relative w-full rounded-aurora m-[10px]"
             padding="p-[20px]"
           >
             <div className="flex-grow mr-4 text-left">
