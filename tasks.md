@@ -307,17 +307,23 @@ All the necessary files for PWA functionality have been created. To maintain ico
 - [ ] Verify icon appearance on other platforms (Android, Windows)
 
 # GrocerySync Username Sync Tasks
-- [ ] Investigate why username updates aren't saving correctly.
-  - [ ] Check `AccountSettings.tsx` form submission logic.
-  - [ ] Check `db.ts` function for updating `user_profiles` table.
-  - [ ] Verify database RLS policies allow profile updates.
+- [x] Investigate why username updates aren't saving correctly.
+  - [x] Check `AccountSettings.tsx` form submission logic.
+  - [x] Check `db.ts` function for updating `user_profiles` table.
+  - [x] Verify database RLS policies allow profile updates.
+- [x] Create `user_profiles` table in Supabase.
+  - [x] Define table schema (id, user_id, username, created_at, updated_at).
+  - [x] Add unique constraint on `user_id`.
+  - [x] Add unique constraint on `username` (optional).
+  - [x] Add RLS policies (SELECT public, INSERT/UPDATE own).
+  - [x] Add `updated_at` trigger (optional).
 - [ ] Ensure updated usernames are displayed correctly for other users.
-  - [ ] Review how usernames are fetched (e.g., `getUserProfiles` in `db.ts`).
-  - [ ] Implement real-time updates for `user_profiles` or add periodic refetching where usernames are displayed.
+  - [x] Review how usernames are fetched (e.g., `getUserProfiles` in `db.ts`).
+  - [ ] Implement real-time updates for `user_profiles` in components displaying usernames (e.g., `ListAdmin.tsx`).
 - [ ] Test username update functionality thoroughly.
 
 # GrocerySync Tasks
 
 - [paused] Ensure web app icon displays correctly on all platforms (especially iOS)
-- [ ] Fix username saving and syncing issue
+- [In Progress] Fix username saving and syncing issue
 - [ ] ... (add more tasks later)

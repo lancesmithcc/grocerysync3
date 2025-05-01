@@ -12,6 +12,7 @@ import {
   generateInviteCode,
   getListUserRole,
   getUserProfiles,
+  supabase
 } from '../lib/db';
 import {
   IoSaveOutline,
@@ -19,6 +20,7 @@ import {
   IoPersonAddOutline,
   IoCopyOutline,
 } from 'react-icons/io5';
+import { REALTIME_SUBSCRIBE_STATES } from '@supabase/supabase-js';
 
 interface ListUserWithEmail extends ListUser {
   email?: string;
@@ -38,6 +40,7 @@ const ListAdmin: React.FC = () => {
   const [inviteCodes, setInviteCodes] = useState<{ admin?: string; writer?: string }>({});
   const [showInvites, setShowInvites] = useState<{ admin?: boolean; writer?: boolean }>({});
   const [userEmails, setUserEmails] = useState<Record<string, string>>({});
+  const [listUserIds, setListUserIds] = useState<string[]>([]);
   
   // Format user ID to be more user-friendly
   const formatUserId = (userId: string): string => {
@@ -78,8 +81,9 @@ const ListAdmin: React.FC = () => {
       // 3. Fetch List Users
       const listUsers = await getListUsers(id);
       
-      // 4. Fetch user emails if possible
+      // 4. Fetch user emails if possible & store user IDs
       const userIds = listUsers.map(u => u.user_id);
+      setListUserIds(userIds);
       const emails = await getUserProfiles(userIds);
       setUserEmails(emails);
       
@@ -100,11 +104,58 @@ const ListAdmin: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [id, user]); // Removed navigate from dependencies
+  }, [id, user]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // *** NEW useEffect for Realtime Updates ***
+  useEffect(() => {
+    if (!listUserIds || listUserIds.length === 0) return; // Don't subscribe if no users
+
+    // Define the subscription callback
+    const handleProfileUpdate = async (payload: any) => {
+      console.log('Profile change detected:', payload);
+      // Refetch profiles for the users currently in the list
+      try {
+        const updatedEmails = await getUserProfiles(listUserIds);
+        setUserEmails(updatedEmails);
+        console.log('Refetched profiles:', updatedEmails);
+      } catch (error) {
+        console.error('Error refetching profiles after update:', error);
+      }
+    };
+
+    // Subscribe to changes in the user_profiles table
+    const channel = supabase
+      .channel('public:user_profiles')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'user_profiles' },
+        handleProfileUpdate
+      )
+      .on( // Also listen for INSERT in case a user gets a profile for the first time
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'user_profiles' },
+        handleProfileUpdate
+       )
+      .subscribe((status, err) => {
+        // Check for CLOSED state as potential failure indicator
+        if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) { 
+          // Log potentially useful error context if available
+          console.error('Realtime subscription closed, potentially failed:', err);
+        } else if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
+          console.log('Realtime subscribed to user_profiles changes!');
+        }
+      });
+
+    // Cleanup function to remove the subscription when the component unmounts
+    return () => {
+      console.log('Unsubscribing from user_profiles changes');
+      supabase.removeChannel(channel);
+    };
+  }, [listUserIds]); // Re-run this effect if the list of user IDs changes
 
   const handleRename = async (e: React.FormEvent) => {
     e.preventDefault();
