@@ -113,18 +113,17 @@ const ListAdmin: React.FC = () => {
     }
   }, [fetchData, user?.id]);
 
-  // *** NEW useEffect for Realtime Updates ***
+  // *** NEW useEffect for Realtime Updates (RUNS ONCE) ***
   useEffect(() => {
-    if (!listUserIds || listUserIds.length === 0) return; // Don't subscribe if no users
-
-    // Define the subscription callback
+    console.log('[Realtime Effect] Setting up stable subscription.');
+    
+    // Define the subscription callback (uses closure over listUserIds)
     const handleProfileUpdate = async (payload: any) => {
-      console.log('>>> Realtime profile change detected:', payload);
+      console.log('>>> RAW Realtime Event Received for user_profiles:', payload);
       if (payload.new?.user_id && payload.new?.username) {
         const changedUserId = payload.new.user_id;
         const newUsername = payload.new.username;
         
-        // Update the specific user in the state map
         setUserEmails(currentEmails => ({
           ...currentEmails,
           [changedUserId]: newUsername
@@ -132,7 +131,6 @@ const ListAdmin: React.FC = () => {
         console.log(`Updated username for ${changedUserId} to ${newUsername} in state.`);
         
       } else if (payload.eventType === 'INSERT' && payload.new?.user_id && payload.new?.username) {
-          // Handle new profile creation if needed (optional, depends on flow)
            const changedUserId = payload.new.user_id;
            const newUsername = payload.new.username;
            setUserEmails(currentEmails => ({
@@ -141,12 +139,14 @@ const ListAdmin: React.FC = () => {
            }));
           console.log(`Added new profile for ${changedUserId} (${newUsername}) to state.`);
       } else {
-        // If the payload doesn't have what we need, maybe refetch all just in case?
-        // This is less efficient but safer if payload structure is uncertain.
         console.warn('Realtime payload structure unclear, refetching all profiles as fallback.');
         try {
-            const updatedEmails = await getUserProfiles(listUserIds);
-            setUserEmails(updatedEmails);
+            // Use the current listUserIds from state within the handler
+            const currentIds = listUserIds;
+            if (currentIds.length > 0) { 
+              const updatedEmails = await getUserProfiles(currentIds);
+              setUserEmails(updatedEmails);
+            }
         } catch (error) {
              console.error('Error refetching profiles after unclear update:', error);
         }
@@ -155,20 +155,15 @@ const ListAdmin: React.FC = () => {
 
     // Subscribe to changes in the user_profiles table
     const channel = supabase
-      .channel('public:user_profiles')
+      .channel('public:user_profiles') 
       .on(
         'postgres_changes',
         { 
-          event: '*'
-        , schema: 'public'
-        , table: 'user_profiles'
+          event: '*' ,
+          schema: 'public' ,
+          table: 'user_profiles' 
         }, 
-        (payload: any) => {
-            // Log *any* payload received on this channel for this table
-            console.log('>>> RAW Realtime Event Received for user_profiles:', payload);
-            // Still call the original handler to process if possible
-            handleProfileUpdate(payload); 
-        }
+        handleProfileUpdate // Use the handler defined above
       )
       .subscribe((status, err) => {
         if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) { 
@@ -182,10 +177,11 @@ const ListAdmin: React.FC = () => {
 
     // Cleanup function to remove the subscription when the component unmounts
     return () => {
-      console.log('[Cleanup] Unsubscribing from user_profiles changes');
+      console.log('[Cleanup] Unsubscribing from stable user_profiles channel');
       supabase.removeChannel(channel);
     };
-  }, [listUserIds]); // Keep dependency for now
+  // Empty dependency array ensures this runs only once on mount
+  }, []); // <-- IMPORTANT: Empty dependency array
 
   const handleRename = async (e: React.FormEvent) => {
     e.preventDefault();
