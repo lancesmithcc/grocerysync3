@@ -214,7 +214,7 @@ const ListView: React.FC = () => {
         </div>
       )}
       
-      <h2 className="text-2xl">Items</h2>
+      <h2 className="text-2xl">Add Items</h2>
       {canAddItem ? (
         <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
           <div className="flex flex-col gap-3 px-1">
@@ -255,8 +255,8 @@ const ListView: React.FC = () => {
         {items.map((item, index) => (
           <AuroraBox
             key={item.id}
-            className="flex flex-row items-start justify-between relative w-full border-b border-gray-700 pb-4"
-            padding="p-2"
+            className="flex flex-row items-start justify-between relative w-full border border-[#333] rounded-aurora m-[10px]"
+            padding="p-[20px]"
           >
             <div className="flex-grow mr-4 text-left">
               <p className={`text-[20px] font-bold leading-tight ${item.done ? 'line-through text-gray-500' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
