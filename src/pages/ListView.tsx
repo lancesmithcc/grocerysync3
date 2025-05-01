@@ -213,7 +213,7 @@ const ListView: React.FC = () => {
           <p className="text-xs text-gray-300">Share this link to invite a <span className="font-bold">{inviteRole === 'admin' ? '🛒 Shopper' : '🤡 Sub'}</span></p>
         </div>
       )}
-      
+      <hr />
       <h2 className="text-2xl">Add Items</h2>
       {canAddItem ? (
         <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
@@ -238,8 +238,8 @@ const ListView: React.FC = () => {
              
              <StarInput value={stars} onChange={setStars} />
           </div>
+
           
-          <hr />
           <button 
             type="submit" 
             className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-3 px-5 rounded-aurora w-full flex items-center justify-center gap-2"
