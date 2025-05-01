@@ -1,4 +1,4 @@
-# GrocerySync3 Tasks
+# GrocerySync Tasks
 
 ## Analysis and Understanding Phase
 - [x] Review Home.tsx to understand app structure
@@ -28,6 +28,42 @@
 - [x] Fix item persistence issue in createItem function
 - [x] Fix shared lists not appearing on Home page by modifying getLists to rely on RLS
 - [x] Test list creation functionality
+- [x] Implement background emoji decoration
+- [x] Implement header layout with Grocery cart icon and styled text
+- [x] Create interface container with black rounded corners and aurora style borders
+- [x] Fix floating emojis visibility
+- [x] Add size variation to floating emoji animation
+- [ ] Investigate and fix star rating display (emojis and background)
+- [x] Investigate and fix item creation failure (400 error)
+- [x] Applied workaround for item creation using direct REST API call
+- [x] Align list items left and reduce line-height (update AuroraBox and classes in ListView.tsx)
+- [x] Test and verify styling changes in the application
+- [x] Add a gear icon to the list view header for the list owner.
+- [x] Create a new route/page for the list admin menu (e.g., `/lists/:listId/admin`).
+- [x] On the admin page, fetch and display the list name.
+- [x] Add functionality to rename the list on the admin page.
+- [x] On the admin page, fetch and display the list of shoppers.
+- [x] Add functionality to add a shopper to the list (via invite link generation).
+- [x] Add functionality to remove a shopper from the list.
+- [x] On the admin page, fetch and display the list of dependents.
+- [x] Add functionality to add a dependent to the list (via invite link generation).
+- [x] Add functionality to remove a dependent from the list.
+- [x] Ensure all text layouts inside the Aurora Box are left-aligned.
+- [x] Refine ListView item layout
+  - [x] Adjust title style (font size, line height)
+  - [x] Adjust notes style (font size, line height)
+  - [x] Convert interactive stars to static display
+  - [x] Reposition delete button to the far right
+  - [x] Optimize spacing for compactness
+- [x] Fix list item alignment and dividing lines
+  - [x] Ensure list items are left-aligned
+  - [x] Make dividing lines between items more visible
+  - [x] Add proper spacing between items
+- [x] Implement invite code expiration
+  - [x] Change default expiration from 7 to 10 days
+  - [x] Create migration for automatic cleanup of expired invite codes
+  - [x] Add client-side cleanup of expired codes when app starts
+  - [x] Delete invite codes after successful use
 
 ## Future Enhancements
 - [ ] Improve UI/UX of the application
@@ -78,6 +114,8 @@
 - [ ] Test offline functionality
 - [ ] Optimize loading times
 
+## Step-by-Step Plan (Original)
+
 1. Kick‑off
 
 [x] Make a fresh Git repo named grocerysync.
@@ -110,7 +148,9 @@
 
 6. Data Tables
 
-[x] lists (id, name, owner)[ ] list_users (list_id, user_id, role)[ ] items (id, list_id, creator_id, title, stars, notes, done, created_at)
+[x] lists (id, name, owner)
+[ ] list_users (list_id, user_id, role)
+[ ] items (id, list_id, creator_id, title, stars, notes, done, created_at)
 [x] Write RLS so members read; writers insert; admins delete.
 
 7. App Pages
@@ -130,7 +170,6 @@
 [x] Hook: useSupabase() wraps auth and queries.
 [x] CRUD helpers in /lib/db.ts.
 
-
 11. Test & polish
 
 [ ] Vitest unit checks for helpers.
@@ -140,33 +179,9 @@
 
 [ ] Update README with set‑up and usage.
 
-# Tasks
+## PWA Implementation Tasks
 
-- [x] Implement background emoji decoration
-- [x] Implement header layout with Grocery cart icon and styled text
-- [x] Create interface container with black rounded corners and aurora style borders
-- [x] Fix floating emojis visibility
-- [x] Add size variation to floating emoji animation
-- [ ] Investigate and fix star rating display (emojis and background)
-- [x] Investigate and fix item creation failure (400 error)
-- [x] Applied workaround for item creation using direct REST API call
-- [x] Create `tasks.md` file to outline the plan.
-- [x] Align list items left and reduce line-height (update AuroraBox and classes in ListView.tsx)
-- [x] Test and verify styling changes in the application
-- [x] Add a gear icon to the list view header for the list owner.
-- [x] Create a new route/page for the list admin menu (e.g., `/lists/:listId/admin`).
-- [x] On the admin page, fetch and display the list name.
-- [x] Add functionality to rename the list on the admin page.
-- [x] On the admin page, fetch and display the list of shoppers.
-- [x] Add functionality to add a shopper to the list (via invite link generation).
-- [x] Add functionality to remove a shopper from the list.
-- [x] On the admin page, fetch and display the list of dependents.
-- [x] Add functionality to add a dependent to the list (via invite link generation).
-- [x] Add functionality to remove a dependent from the list.
-
-# PWA Implementation Tasks
-
-## Icon Generation
+### Icon Generation
 - [x] Identify the source icon (src/assets/icon.svg)
 - [x] Generate favicons in various sizes (16x16, 32x32, 48x48, 64x64, 128x128, 256x256)
 - [x] Generate Apple touch icons (180x180, 120x120, 152x152, 167x167, 76x76, 60x60, etc.)
@@ -175,7 +190,7 @@
 - [x] Generate shortcut icons for manifest (shopping list, recipes)
 - [x] Generate iOS splash screens for various device sizes
 
-## Configuration Files
+### Configuration Files
 - [x] Create manifest.json with proper icon references
 - [x] Update HTML with appropriate meta tags and manifest link
 - [x] Add favicon links to HTML
@@ -183,15 +198,15 @@
 - [x] Add iOS splash screen links for different device sizes
 - [x] Add Microsoft tile meta tags
 
-## Service Worker
+### Service Worker
 - [x] Set up basic service worker for caching
 - [x] Register service worker in the application
 
-## Testing
+### Testing
 - [x] Verify icons display correctly on various platforms
 - [x] Enhanced iOS support for proper home screen icon display
 
-## Installation Instructions
+### Installation Instructions
 
 All the necessary files for PWA functionality have been created. To maintain icon assets:
 
@@ -229,39 +244,6 @@ All the necessary files for PWA functionality have been created. To maintain ico
    - Test on multiple iOS devices if possible
    - Verify the icon appears correctly on the home screen
    - Verify the splash screen appears on app launch
-
-# GrocerySync Tasks
-
-- [x] Refine ListView item layout
-  - [x] Adjust title style (font size, line height)
-  - [x] Adjust notes style (font size, line height)
-  - [x] Convert interactive stars to static display
-  - [x] Reposition delete button to the far right
-  - [x] Optimize spacing for compactness
-- [x] Fix list item alignment and dividing lines
-  - [x] Ensure list items are left-aligned
-  - [x] Make dividing lines between items more visible
-  - [x] Add proper spacing between items
-- [x] Implement invite code expiration
-  - [x] Change default expiration from 7 to 10 days
-  - [x] Create migration for automatic cleanup of expired invite codes
-  - [x] Add client-side cleanup of expired codes when app starts
-  - [x] Delete invite codes after successful use
-- [paused] Ensure web app icon displays correctly on all platforms (especially iOS)
-  - [x] Verify `index.html` meta tags
-  - [x] Verify `manifest.json` icon declarations
-  - [x] Verify icon files exist in `public/icons`
-  - [x] Verify `browserconfig.xml`
-  - [ ] Test by clearing cache on iOS device
-  - [ ] Test with Safari Web Inspector if needed
-- [ ] ... Add more tasks as needed ...
-
-- [x] Improve user display in ListAdmin page
-  - [x] Format long user IDs to be more user-friendly
-  - [x] Add getUserProfiles utility function to fetch user emails
-  - [x] Update UI to clearly show user emails or formatted IDs
-  - [x] Fix issue with "EMAIL NOT FOUND" by using formatUserId function directly
-  - [x] Fix issue with long user IDs still appearing by moving formatUserId function before it's used
 
 # GrocerySync Admin Menu Tasks
 
@@ -317,13 +299,14 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Add unique constraint on `username` (optional).
   - [x] Add RLS policies (SELECT public, INSERT/UPDATE own).
   - [x] Add `updated_at` trigger (optional).
-- [ ] Ensure updated usernames are displayed correctly for other users.
+- [x] Ensure updated usernames are displayed correctly for other users.
   - [x] Review how usernames are fetched (e.g., `getUserProfiles` in `db.ts`).
-  - [ ] Implement real-time updates for `user_profiles` in components displaying usernames (e.g., `ListAdmin.tsx`).
-- [ ] Test username update functionality thoroughly.
+  - [x] Implement real-time updates for `user_profiles` in components displaying usernames (e.g., `ListAdmin.tsx`).
+  - [x] Fix username display logic in `ListAdmin.tsx` (fetch/state/render order).
+- [ ] Test real-time username update functionality thoroughly.
 
 # GrocerySync Tasks
 
 - [paused] Ensure web app icon displays correctly on all platforms (especially iOS)
-- [In Progress] Fix username saving and syncing issue
+- [x] Fix username saving and syncing issue
 - [ ] ... (add more tasks later)
