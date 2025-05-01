@@ -238,12 +238,14 @@ const ListView: React.FC = () => {
              
              <StarInput value={stars} onChange={setStars} />
           </div>
+          
+          <hr />
           <button 
             type="submit" 
             className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-3 px-5 rounded-aurora w-full flex items-center justify-center gap-2"
             title="Add Item"
           >
-            <hr />
+            
             <IoAddCircleOutline className="text-xl"/> Add Item
           </button>
         </form>
