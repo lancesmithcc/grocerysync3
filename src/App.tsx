@@ -48,7 +48,8 @@ function App() {
             padding: '40px',
             borderRadius: '31px',
             opacity: 0.9,
-            zIndex: 1
+            zIndex: 1,
+            textAlign: 'left'
           }}>
             <Routes>
               <Route path="/" element={<Home />} />
