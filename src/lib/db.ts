@@ -504,40 +504,42 @@ export const removeUserFromList = async (listId: string, userId: string): Promis
   }
 };
 
-// Helper function to get user emails by IDs
+// Helper function to get user profiles (username primarily) by IDs
 export const getUserProfiles = async (userIds: string[]): Promise<Record<string, string>> => {
   try {
     if (!userIds || userIds.length === 0) {
-      return {}; // Return empty object if no IDs provided
+      return {};
     }
 
-    // Create a lookup map of user IDs to emails
-    const profilesMap: Record<string, string> = {};
-    
-    // Current user's email - this we know for sure
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      profilesMap[user.id] = user.email || '';
-    }
-    
-    // Try to get usernames from user_profiles table
-    const { data: profiles, error } = await supabase
+    console.log('[getUserProfiles] Fetching profiles for user IDs:', userIds);
+
+    const { data, error } = await supabase
       .from('user_profiles')
-      .select('user_id, username')
+      .select('user_id, username') // Select only needed fields
       .in('user_id', userIds);
-      
+
     if (error) {
       console.error('Error fetching user profiles:', error);
-    } else {
-      // Add usernames to the profilesMap
-      profiles?.forEach(profile => {
+      // Depending on requirements, you might want to throw or return partial data
+      return {}; // Return empty on error for now
+    }
+
+    // Build the map directly from fetched profiles
+    const profilesMap: Record<string, string> = {};
+    if (data) {
+      data.forEach(profile => {
         if (profile.user_id && profile.username) {
           profilesMap[profile.user_id] = profile.username;
         }
+        // If a profile exists but has no username (shouldn't happen with CHECK constraint),
+        // or if a profile doesn't exist for a user ID, it simply won't be added to the map.
+        // The UI (formatUserId) will handle the fallback.
       });
     }
-    
+
+    console.log('[getUserProfiles] Profiles map constructed:', profilesMap);
     return profilesMap;
+
   } catch (error) {
     console.error('Exception in getUserProfiles:', error);
     return {}; // Return empty object on failure
