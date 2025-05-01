@@ -247,6 +247,13 @@ All the necessary files for PWA functionality have been created. To maintain ico
   - [x] Create migration for automatic cleanup of expired invite codes
   - [x] Add client-side cleanup of expired codes when app starts
   - [x] Delete invite codes after successful use
+- [paused] Ensure web app icon displays correctly on all platforms (especially iOS)
+  - [x] Verify `index.html` meta tags
+  - [x] Verify `manifest.json` icon declarations
+  - [x] Verify icon files exist in `public/icons`
+  - [x] Verify `browserconfig.xml`
+  - [ ] Test by clearing cache on iOS device
+  - [ ] Test with Safari Web Inspector if needed
 - [ ] ... Add more tasks as needed ...
 
 - [x] Improve user display in ListAdmin page
@@ -298,3 +305,19 @@ All the necessary files for PWA functionality have been created. To maintain ico
 - [ ] Test installation on iOS device
 - [ ] Test favicon on various browsers
 - [ ] Verify icon appearance on other platforms (Android, Windows)
+
+# GrocerySync Username Sync Tasks
+- [ ] Investigate why username updates aren't saving correctly.
+  - [ ] Check `AccountSettings.tsx` form submission logic.
+  - [ ] Check `db.ts` function for updating `user_profiles` table.
+  - [ ] Verify database RLS policies allow profile updates.
+- [ ] Ensure updated usernames are displayed correctly for other users.
+  - [ ] Review how usernames are fetched (e.g., `getUserProfiles` in `db.ts`).
+  - [ ] Implement real-time updates for `user_profiles` or add periodic refetching where usernames are displayed.
+- [ ] Test username update functionality thoroughly.
+
+# GrocerySync Tasks
+
+- [paused] Ensure web app icon displays correctly on all platforms (especially iOS)
+- [ ] Fix username saving and syncing issue
+- [ ] ... (add more tasks later)
