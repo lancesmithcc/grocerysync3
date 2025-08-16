@@ -6,6 +6,7 @@ interface SupabaseContextValue {
   session: Session | null;
   user: User | null;
   signInWithMagicLink: (email: string) => Promise<any>;
+  signInWithGoogle: () => Promise<any>;
   signOut: () => Promise<any>;
 }
 
@@ -34,10 +35,16 @@ export const SupabaseProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, []);
 
   const signInWithMagicLink = (email: string) => supabase.auth.signInWithOtp({ email });
+  const signInWithGoogle = () => supabase.auth.signInWithOAuth({ 
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
   const signOut = () => supabase.auth.signOut();
 
   return (
-    <SupabaseContext.Provider value={{ session, user, signInWithMagicLink, signOut }}>
+    <SupabaseContext.Provider value={{ session, user, signInWithMagicLink, signInWithGoogle, signOut }}>
       {children}
     </SupabaseContext.Provider>
   );

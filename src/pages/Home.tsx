@@ -5,10 +5,10 @@ import type { List } from '../lib/db';
 import { getLists, createList, deleteList } from '../lib/db';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
-import { IoAddCircleOutline, IoTrashOutline, IoMailOutline, IoLogOutOutline } from 'react-icons/io5';
+import { IoAddCircleOutline, IoTrashOutline, IoMailOutline, IoLogOutOutline, IoLogoGoogle } from 'react-icons/io5';
 
 const Home: React.FC = () => {
-  const { user, signInWithMagicLink, signOut } = useSupabase();
+  const { user, signInWithMagicLink, signInWithGoogle, signOut } = useSupabase();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [lists, setLists] = useState<List[]>([]);
@@ -39,6 +39,14 @@ const Home: React.FC = () => {
     setLoading(false);
     if (error) setMessage(error.message);
     else setMessage('Check your email for the login link!');
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setMessage('Redirecting to Google...');
+    const { error } = await signInWithGoogle();
+    setLoading(false);
+    if (error) setMessage(error.message);
   };
 
   const handleCreateList = async () => {
@@ -92,24 +100,42 @@ const Home: React.FC = () => {
         <div className="flex flex-col items-center justify-center">
           <Header />
           <h2 className="text-4xl font-bold mb-12">Sign in to GrocerySync</h2>
-          <form onSubmit={handleLogin} className="w-full max-w-md flex flex-col items-center space-y-6">
-            <input
-              type="email"
-              className="aurora-border-pulse w-full rounded-aurora p-6 text-black bg-white focus:bg-gray-100 transition-colors placeholder-gray-500"
-              placeholder="Enter your email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              disabled={loading}
-            />
+          
+          <div className="w-full max-w-md flex flex-col items-center space-y-6">
+            <form onSubmit={handleLogin} className="w-full flex flex-col items-center space-y-6">
+              <input
+                type="email"
+                className="aurora-border-pulse w-full rounded-aurora p-6 text-black bg-white focus:bg-gray-100 transition-colors placeholder-gray-500"
+                placeholder="Enter your email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-3 px-6 rounded-aurora w-full font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <IoMailOutline /> {loading ? 'Sending...' : 'Send Magic Link'}
+              </button>
+            </form>
+            
+            <div className="relative w-full flex items-center justify-center my-4">
+              <div className="flex-grow border-t border-gray-600"></div>
+              <span className="mx-4 text-gray-400 text-sm">OR</span>
+              <div className="flex-grow border-t border-gray-600"></div>
+            </div>
+            
             <button
-              type="submit"
-              className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white py-3 px-6 rounded-aurora w-full font-bold disabled:opacity-50 flex items-center justify-center gap-2"
+              onClick={handleGoogleLogin}
+              className="bg-white hover:bg-gray-100 transition-colors text-black py-3 px-6 rounded-aurora w-full font-bold disabled:opacity-50 flex items-center justify-center gap-2"
               disabled={loading}
             >
-              <IoMailOutline /> {loading ? 'Sending...' : 'Send Magic Link'}
+              <IoLogoGoogle className="text-red-500" /> {loading ? 'Redirecting...' : 'Sign in with Google'}
             </button>
-          </form>
+          </div>
+          
           {message && <p className="mt-6 text-sm text-center text-[#3CAAFF] font-light">{message}</p>}
         </div>
       </>
