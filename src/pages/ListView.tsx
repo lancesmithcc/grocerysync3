@@ -284,26 +284,26 @@ const ListView: React.FC = () => {
                <p className={`text-[20px] font-bold leading-none ${item.done ? 'line-through text-gray-600' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
                {item.title}
                </p>
-               {item.notes && <p className="text-[16px] text-gray-300 leading-none mt-0.5">{item.notes}</p>}
+               {item.notes && <p className="text-[16px] text-gray-300 leading-[1] mt-0.5">{item.notes}</p>}
                </div>
-                <div className="flex items-center space-x-0 text-sm leading-none" title={`${item.stars} star importance`}>
-    {[1, 2, 3, 4, 5].map((starValue) => (
-      <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 text-2xl leading-none">
-        {starValue <= item.stars ? '⭐' : '☆'}
-      </span>
-    ))}
+                <div className="flex items-center space-x-0 text-sm leading-[1]" title={`${item.stars} star importance`}>
+                {[1, 2, 3, 4, 5].map((starValue) => (
+                <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 text-3xl leading-[1]">
+                {starValue <= item.stars ? '⭐' : '☆'}
+                </span>
+                 ))}
 
-    {userRole === 'admin' && (
-      <button
-        onClick={() => handleDelete(item.id, item.title)}
-        className="text-red-500 hover:text-red-400 text-lg p-1 rounded-aurora leading-none flex-shrink-0 ml-2"
-        title="Delete Item"
-      >
-        <IoTrashOutline />
-      </button>
-    )}
-  </div>
-</div>
+                {userRole === 'admin' && (
+                <button
+                onClick={() => handleDelete(item.id, item.title)}
+                className="text-red-500 hover:text-red-400 text-lg p-1 rounded-aurora leading-[1] flex-shrink-0 ml-2"
+                title="Delete Item"
+                >
+                <IoTrashOutline />
+                </button>
+                )}
+                </div>
+              </div>
 
 
 
