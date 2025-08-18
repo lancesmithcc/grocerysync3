@@ -217,7 +217,14 @@ const ListView: React.FC = () => {
       <h2 className="text-2xl">Add Items</h2>
       {canAddItem ? (
         <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
-          <div className="flex flex-col gap-3 px-1">
+
+
+
+
+
+
+
+          <div className="flex flex-row gap-3 px-1">
             <input
               type="text"
               placeholder="Item title"
@@ -234,6 +241,12 @@ const ListView: React.FC = () => {
               className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
             />
           </div>
+
+
+
+
+
+          
           <div className="flex items-center justify-between py-2">
              
              <StarInput value={stars} onChange={setStars} />
@@ -263,17 +276,28 @@ const ListView: React.FC = () => {
           >
             <div className="flex-grow mr-4 text-left">
               <hr />
-              <p className={`text-[20px] font-bold leading-tight ${item.done ? 'line-through text-gray-600' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
-                {item.title}
-              </p>
-              {item.notes && <p className="text-[16px] text-gray-300 leading-tight mt-0">{item.notes}</p>}
-              <div className="flex space-x-0 text-sm leading-none mt-1" title={`${item.stars} star importance`}>
+
+
+
+              <div className="flex flex-row items-start gap-4">
+                <div className="flex-1">
+                  <p className={`text-[20px] font-bold leading-tight ${item.done ? 'line-through text-gray-600' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
+                  {item.title}
+                  </p>
+                  {item.notes && <p className="text-[16px] text-gray-300 leading-tight mt-0">{item.notes}</p>}
+                </div>
+              <div className="flex space-x-0 text-sm leading-none mt-1.5" title={`${item.stars} star importance`}>
                 {[1, 2, 3, 4, 5].map((starValue) => (
-                  <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0">
-                    {starValue <= item.stars ? '⭐' : '☆'}
-                  </span>
+                <span key={starValue} className="star-btn !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0 text-2xl">
+                {starValue <= item.stars ? '⭐' : '☆'}
+                </span>
                 ))}
+                </div>
               </div>
+
+
+
+
             </div>
             {userRole === 'admin' && (
               <button
