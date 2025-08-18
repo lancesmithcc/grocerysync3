@@ -154,7 +154,7 @@ const ListView: React.FC = () => {
   return (
     <div className="p-4 space-y-4">
       <Header showEmail={true} />
-      <div className="flex justify-between items-center mt-[15px]">
+      <div className="flex justify-between items-center padme">
         <Link to="/" className="text-sm text-blue-300">⬅️ Back to Lists </Link>
         {userRole && (
            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-700 text-gray-300">
