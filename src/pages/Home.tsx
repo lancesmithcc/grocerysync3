@@ -97,7 +97,7 @@ const Home: React.FC = () => {
   if (!user) {
     return (
       <>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center padmeh">
           <Header />
           <h2 className="text-4xl font-bold mb-12">Sign in to GrocerySync</h2>
           
