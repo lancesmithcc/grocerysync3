@@ -279,9 +279,9 @@ const ListView: React.FC = () => {
 
 
 
-              <div className="flex flex-row items-start gap-4">
+              <div className="flex flex-row items-start gap-4 tight">
                <div className="flex-1">
-               <p className={`text-[20px] font-bold leading-none ${item.done ? 'line-through text-gray-600' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
+               <p className={`text-[20px] tight font-bold leading-none ${item.done ? 'line-through text-gray-600' : ''} ${!canAddItem && item.done ? 'text-gray-500' : ''}`}>
                {item.title}
                </p>
                {item.notes && <p className="text-[16px] text-gray-300 leading-[1] mt-0.5">{item.notes}</p>}
