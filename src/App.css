@@ -10,6 +10,7 @@
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
@@ -42,3 +43,4 @@
 }
 .tight *{line-height:1;margin:0px 0px !important;padding:0px 0px !important ;}
 .padme{margin-top:15px !important;}
+h1{max-width:95%;}
