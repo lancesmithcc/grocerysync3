@@ -146,7 +146,7 @@ const Home: React.FC = () => {
     <div className="space-y-8">
       <Header showEmail={true} />
       <div className="flex justify-between items-center mb-8 border-b border-[#3CAAFF]/30 pb-4">
-        <h2 className="text-2xl font-bold text-white">Your <span className="text-[#3CAAFF]">Lists</span></h2>
+        
         <div className="flex items-center space-x-4">
           <button
             onClick={handleCreateList}
@@ -199,7 +199,7 @@ const Home: React.FC = () => {
             >
               <Link 
                 to={`/list/${list.id}`} 
-                className="block text-white text-lg font-bold hover:text-[#3CAAFF] transition-colors flex-grow mr-2"
+                className="block text-white text-lg font-bold hover:text-[#f5f5f5] transition-colors flex-grow mr-2"
               >
                 {list.name}
               </Link>
