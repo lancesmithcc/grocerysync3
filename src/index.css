@@ -21,7 +21,9 @@ html, body {
   padding: 33px;;
   position: relative;
   overflow: hidden;
+  text-align:center;
 }
+*{text-align:center !important;}
 
 body::before {
   content: '';

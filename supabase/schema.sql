@@ -31,10 +31,22 @@ create table public.items (
   created_at timestamptz default now()
 );
 
+-- Create invite_codes table
+DROP TABLE IF EXISTS public.invite_codes CASCADE;
+CREATE TABLE public.invite_codes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  list_id uuid NOT NULL REFERENCES public.lists(id) ON DELETE CASCADE,
+  code text NOT NULL UNIQUE,
+  role text NOT NULL CHECK (role IN ('writer', 'admin')),
+  created_at timestamptz DEFAULT now(),
+  expires_at timestamptz NOT NULL
+);
+
 -- Enable Row Level Security
 alter table public.lists enable row level security;
-alter table public.list_users enable row level security;
+-- alter table public.list_users enable row level security;
 alter table public.items enable row level security;
+ALTER TABLE public.invite_codes ENABLE ROW LEVEL SECURITY;
 
 -- RLS policies for lists
 create policy "Allow read for members and owner" on public.lists for select using (
@@ -99,18 +111,59 @@ create policy "Allow delete by admins" on public.items
   for delete 
   using ( is_list_member(list_id, 'admin') );
 
--- RLS policies for list_users
-CREATE POLICY "Allow read for list members" ON public.list_users
-  FOR SELECT USING (is_list_member(list_id, 'writer'));
+-- RLS policies for invite_codes
+DROP POLICY IF EXISTS "Allow read for list members" ON public.invite_codes;
+CREATE POLICY "Allow any authenticated user to read invite codes" ON public.invite_codes
+  FOR SELECT
+  USING ( auth.role() = 'authenticated' );
 
-CREATE POLICY "Allow insert for list admins or list owner" ON public.list_users
-  FOR INSERT WITH CHECK (
-    (
-        (SELECT l.owner_uuid FROM public.lists l WHERE l.id = list_id) = auth.uid()
-    ) OR (
-        is_list_member(list_id, 'admin')
-    )
+CREATE POLICY "Allow insert by list owner or admins" ON public.invite_codes FOR INSERT WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM public.list_users WHERE list_id = invite_codes.list_id AND user_id = auth.uid() AND role = 'admin'
+  )
+);
+CREATE POLICY "Allow delete by list owner or admins" ON public.invite_codes FOR DELETE USING (
+  EXISTS (
+    SELECT 1 FROM public.list_users WHERE list_id = invite_codes.list_id AND user_id = auth.uid() AND role = 'admin'
+  )
 );
 
-CREATE POLICY "Allow modification by list admins" ON public.list_users
-  FOR UPDATE, DELETE USING (is_list_member(list_id, 'admin')); 
+-- RLS policies for list_users
+
+-- Drop old policies to be safe
+DROP POLICY IF EXISTS "Allow read for list members" ON public.list_users;
+DROP POLICY IF EXISTS "Allow insert for list admins or list owner" ON public.list_users;
+DROP POLICY IF EXISTS "Allow modification by list admins" ON public.list_users;
+
+-- A user can see all members of a list if they are a member of that list.
+CREATE POLICY "Allow read access to fellow list members" ON public.list_users
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM list_users lu
+      WHERE lu.list_id = list_users.list_id AND lu.user_id = auth.uid()
+    )
+  );
+
+-- The list owner or a list admin can add new users.
+CREATE POLICY "Allow insert by owner or admin" ON public.list_users
+  FOR INSERT WITH CHECK (
+    ( -- User is the list owner
+      SELECT owner_uuid FROM lists WHERE id = list_id
+    ) = auth.uid()
+    OR
+    ( -- User is an admin of the list
+      SELECT role FROM list_users WHERE list_id = list_users.list_id AND user_id = auth.uid()
+    ) = 'admin'
+  );
+
+-- An admin can update or delete any user in the list.
+CREATE POLICY "Admins can manage list members" ON public.list_users
+  FOR ALL -- For UPDATE, DELETE
+  USING (
+    (SELECT role FROM list_users WHERE list_id = list_users.list_id AND user_id = auth.uid()) = 'admin'
+  );
+
+-- A user can leave a list (delete their own membership).
+CREATE POLICY "Users can leave lists" ON public.list_users
+  FOR DELETE
+  USING ( user_id = auth.uid() ); 
