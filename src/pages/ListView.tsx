@@ -13,6 +13,7 @@ import {
 } from '../lib/db';
 import { IoAddCircleOutline, IoTrashOutline, IoCopyOutline, IoPersonAddOutline, IoSettingsOutline } from 'react-icons/io5';
 import Header from '../components/Header';
+import Modal from '../components/Modal';
 
 // Helper component for clickable stars input using EMOJIS
 const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> = ({ value, onChange }) => {
@@ -48,6 +49,7 @@ const ListView: React.FC = () => {
   const [message, setMessage] = useState('');
   const [userRole, setUserRole] = useState<'writer' | 'admin' | null>(null);
   const [inviteRole, setInviteRole] = useState<'writer' | 'admin'>('writer');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setItems([]);
@@ -97,6 +99,7 @@ const ListView: React.FC = () => {
     setTitle('');
     setNotes('');
     setStars(0); 
+    setIsModalOpen(false);
   };
 
   const handleToggleDone = async (item: Item) => {
@@ -216,52 +219,47 @@ const ListView: React.FC = () => {
       <hr />
       <h2 className="text-2xl">Add Items</h2>
       {canAddItem ? (
-        <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
-
-
-
-
-
-
-
-          <div className="flex flex-row gap-3 px-1">
-            <input
-              type="text"
-              placeholder="Item title"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Notes (optional)"
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
-            />
-          </div>
-
-
-
-
-
-          
-          <div className="flex items-center justify-between py-2">
-             
-             <StarInput value={stars} onChange={setStars} />
-          </div>
-
-          
+        <>
           <button 
-            type="submit" 
+            onClick={() => setIsModalOpen(true)}
             className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-3 px-5 rounded-aurora w-full flex items-center justify-center gap-2"
-            title="Add Item"
           >
-            
             <IoAddCircleOutline className="text-xl"/> Add Item
           </button>
-        </form>
+          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <form onSubmit={handleAdd} className="space-y-3 p-1 flex flex-col gap-2">
+              <div className="flex flex-row gap-3 px-1">
+                <input
+                  type="text"
+                  placeholder="Item title"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Notes (optional)"
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  className="aurora-border-pulse text-black bg-white focus:bg-gray-100 transition-colors p-6 rounded-aurora w-full"
+                />
+              </div>
+              
+              <div className="flex items-center justify-between py-2">
+                <StarInput value={stars} onChange={setStars} />
+              </div>
+              
+              <button 
+                type="submit" 
+                className="bg-[#6D5AE6] hover:opacity-90 transition-opacity text-white font-bold py-3 px-5 rounded-aurora w-full flex items-center justify-center gap-2"
+                title="Add Item"
+              >
+                <IoAddCircleOutline className="text-xl"/> Add Item
+              </button>
+            </form>
+          </Modal>
+        </>
       ) : (
          <p className="text-sm text-gray-400 italic p-4 bg-black/30 rounded-aurora">
           {userRole === null ? 'Login to add items.' : 'You do not have permission to add items to this list.'}
