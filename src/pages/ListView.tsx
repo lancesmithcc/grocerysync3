@@ -99,7 +99,7 @@ const ListView: React.FC = () => {
     setTitle('');
     setNotes('');
     setStars(0); 
-    setIsModalOpen(false);
+    setTimeout(() => setIsModalOpen(false), 0);
   };
 
   const handleToggleDone = async (item: Item) => {
