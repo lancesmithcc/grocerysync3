@@ -225,7 +225,7 @@ const ListView: React.FC = () => {
         </div>
       )}
       <hr />
-      <h2 className="text-2xl">Add Items</h2>
+      
       {canAddItem ? (
         <>
           <button 
