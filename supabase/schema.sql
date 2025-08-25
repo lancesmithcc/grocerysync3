@@ -57,11 +57,12 @@ create policy "Allow delete by owner" on public.lists for delete using (
 DROP FUNCTION IF EXISTS is_list_member(uuid, text);
 CREATE OR REPLACE FUNCTION is_list_member(list_id_check uuid, min_role text)
 RETURNS boolean
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT EXISTS (
+BEGIN
+  RETURN EXISTS (
     SELECT 1
     FROM list_users
     WHERE list_id = list_id_check
@@ -71,6 +72,7 @@ AS $$
         (min_role = 'admin' AND role = 'admin')
       )
   );
+END;
 $$;
 
 -- Drop existing policies before recreating
@@ -95,4 +97,20 @@ create policy "Allow update by writers or admins" on public.items
 
 create policy "Allow delete by admins" on public.items 
   for delete 
-  using ( is_list_member(list_id, 'admin') ); 
+  using ( is_list_member(list_id, 'admin') );
+
+-- RLS policies for list_users
+CREATE POLICY "Allow read for list members" ON public.list_users
+  FOR SELECT USING (is_list_member(list_id, 'writer'));
+
+CREATE POLICY "Allow insert for list admins or list owner" ON public.list_users
+  FOR INSERT WITH CHECK (
+    (
+        (SELECT l.owner_uuid FROM public.lists l WHERE l.id = list_id) = auth.uid()
+    ) OR (
+        is_list_member(list_id, 'admin')
+    )
+);
+
+CREATE POLICY "Allow modification by list admins" ON public.list_users
+  FOR UPDATE, DELETE USING (is_list_member(list_id, 'admin')); 

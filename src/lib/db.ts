@@ -71,22 +71,16 @@ export async function createList(name: string, userId: string) {
     console.log('Successfully created list:', data);
 
     // Now add the user to list_users
-    try {
-      const { error: listUserError } = await supabase
-        .from('list_users')
-        .insert({ list_id: data.id, user_id: userId, role: 'admin' });
+    const { error: listUserError } = await supabase
+      .from('list_users')
+      .insert({ list_id: data.id, user_id: userId, role: 'admin' });
 
-      if (listUserError) {
-        console.error('Error inserting into list_users:', listUserError);
-        throw listUserError;
-      }
-      
-      console.log('Successfully added user to list_users');
-    } catch (listUserErr) {
-      console.error('Exception in list_users insert:', listUserErr);
-      // Even if this fails, return the list data
-      return data;
+    if (listUserError) {
+      console.error('Error inserting into list_users:', listUserError);
+      throw listUserError;
     }
+    
+    console.log('Successfully added user to list_users');
 
     return data;
   } catch (error) {
