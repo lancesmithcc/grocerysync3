@@ -26,7 +26,7 @@ const StarInput: React.FC<{ value: number; onChange: (value: number) => void }> 
           type="button"
           onClick={() => onChange(starValue === value ? 0 : starValue)}
           // Ensuring transparent background
-          className="star-btn text-xl transition-transform hover:scale-110 !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0"
+          className="star-btn text-xl !bg-none !bg-transparent !border-0 !shadow-none !p-0 !m-0"
           title={`${starValue} star${starValue > 1 ? 's' : ''}`}
         >
           {/* Use emoji characters */} 
