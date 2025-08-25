@@ -50,6 +50,7 @@ const ListView: React.FC = () => {
   const [userRole, setUserRole] = useState<'writer' | 'admin' | null>(null);
   const [inviteRole, setInviteRole] = useState<'writer' | 'admin'>('writer');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [shouldResetForm, setShouldResetForm] = useState(false);
 
   useEffect(() => {
     setItems([]);
@@ -88,6 +89,15 @@ const ListView: React.FC = () => {
     }
   }, [id, user]);
 
+  useEffect(() => {
+    if (!isModalOpen && shouldResetForm) {
+      setTitle('');
+      setNotes('');
+      setStars(0);
+      setShouldResetForm(false);
+    }
+  }, [isModalOpen, shouldResetForm]);
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !id || !(userRole === 'writer' || userRole === 'admin')) return;
@@ -95,11 +105,9 @@ const ListView: React.FC = () => {
     // Pass the current stars state to createItem
     const newItem = await createItem(id, user.id, title, stars, notes);
     setItems(prev => [newItem, ...prev]);
-    // Reset form fields
-    setTitle('');
-    setNotes('');
-    setStars(0); 
-    setTimeout(() => setIsModalOpen(false), 0);
+    // Close modal and flag that form needs reset
+    setIsModalOpen(false);
+    setShouldResetForm(true);
   };
 
   const handleToggleDone = async (item: Item) => {
